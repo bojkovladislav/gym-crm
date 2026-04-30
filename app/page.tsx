@@ -13,3 +13,6 @@ export default async function Home() {
         redirect('/login');
     }
 }
+
+// TODO: ADD Error message in case of failed authentication
+// TODO: Start doing the dashboard

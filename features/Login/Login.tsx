@@ -13,8 +13,9 @@ import {
     Box,
 } from '@mantine/core';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
+import { formCsrfMiddleware } from 'better-auth/api';
 
 type Inputs = {
     email: string;
@@ -22,12 +23,13 @@ type Inputs = {
 };
 
 export default function Login() {
-    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
     const {
         control,
         handleSubmit,
-        formState: { errors },
+        watch,
+        formState: { errors, isLoading },
     } = useForm<Inputs>({
         defaultValues: {
             email: '',
@@ -35,9 +37,9 @@ export default function Login() {
         },
     });
 
-    const onSubmit: SubmitHandler<Inputs> = async (data) => {
-        setLoading(true);
+    const [email, password] = watch(['email', 'password']);
 
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
         try {
             const { data: incomingData, error } = await authClient.signIn.email(
                 {
@@ -49,18 +51,23 @@ export default function Login() {
 
             if (error) {
                 console.error('Login failed:', error);
-                setLoading(false);
+
+                setErrorMessage(error?.message);
 
                 return;
             }
-
-            console.log('Response: ', incomingData);
         } catch (err) {
             console.error('Unexpected error', err);
+            setErrorMessage('Unexpected error');
         } finally {
-            setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (errorMessage) {
+            setErrorMessage('');
+        }
+    }, [email, password]);
 
     return (
         <Box
@@ -111,15 +118,18 @@ export default function Login() {
                             )}
                         />
 
+                        {errorMessage && (
+                            <Text c='red.6' size='sm' mt='xs' fw={500}>
+                                {errorMessage}
+                            </Text>
+                        )}
+
                         <Group justify='flex-end' mt='md'>
                             <Anchor
                                 component='button'
                                 type='button'
                                 size='sm'
                                 fw={500}
-                                onClick={() =>
-                                    console.log('Redirect to forgot password')
-                                }
                             >
                                 Forgot password?
                             </Anchor>
@@ -130,7 +140,7 @@ export default function Login() {
                             fullWidth
                             mt='xl'
                             size='md'
-                            loading={loading}
+                            loading={isLoading}
                             variant='filled'
                             color='blue'
                         >
