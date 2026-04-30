@@ -3,7 +3,6 @@
 import {
     TextInput,
     PasswordInput,
-    Checkbox,
     Anchor,
     Paper,
     Title,
@@ -15,11 +14,11 @@ import {
 } from '@mantine/core';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useState } from 'react';
+import { authClient } from '@/lib/auth-client';
 
 type Inputs = {
     email: string;
     password: string;
-    rememberMe: boolean;
 };
 
 export default function Login() {
@@ -33,15 +32,34 @@ export default function Login() {
         defaultValues: {
             email: '',
             password: '',
-            rememberMe: false,
         },
     });
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
         setLoading(true);
-        console.log(data);
-        await new Promise((res) => setTimeout(res, 1000));
-        setLoading(false);
+
+        try {
+            const { data: incomingData, error } = await authClient.signIn.email(
+                {
+                    email: data.email,
+                    password: data.password,
+                    rememberMe: false,
+                },
+            );
+
+            if (error) {
+                console.error('Login failed:', error);
+                setLoading(false);
+
+                return;
+            }
+
+            console.log('Response: ', incomingData);
+        } catch (err) {
+            console.error('Unexpected error', err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
