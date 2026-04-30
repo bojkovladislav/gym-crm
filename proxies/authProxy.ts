@@ -1,7 +1,10 @@
+import 'dotenv';
 import { NextRequest, NextResponse } from 'next/server';
 
+const authToken = process.env.BETTER_AUTH_TOKEN || '';
+
 export function authProxy(request: NextRequest) {
-    const token = request.cookies.get('token')?.value;
+    const token = request.cookies.get(authToken)?.value;
     const { pathname } = request.nextUrl;
 
     if (!token && pathname.startsWith('/dashboard')) {

@@ -7,8 +7,6 @@ export function proxy(request: NextRequest) {
     for (const fn of proxies) {
         const res = fn(request);
 
-        console.log('it is processing...');
-
         if (res) return res;
     }
 

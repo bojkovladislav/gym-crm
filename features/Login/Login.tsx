@@ -43,7 +43,7 @@ export default function Login() {
                 {
                     email: data.email,
                     password: data.password,
-                    rememberMe: false,
+                    callbackURL: '/dashboard',
                 },
             );
 
