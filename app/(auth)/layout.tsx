@@ -1,4 +1,5 @@
-import { Box, Container, Text, Title } from '@mantine/core';
+import { Logo } from '@/components/Logo';
+import { Box, Container, Text } from '@mantine/core';
 
 export default function AuthLayout({
     children,
@@ -14,9 +15,7 @@ export default function AuthLayout({
             }}
         >
             <Container size={420} my={40}>
-                <Title ta='center' order={1} fw={900} c='blue.7'>
-                    GYM FLOW
-                </Title>
+                <Logo />
 
                 <Text c='dimmed' size='sm' ta='center' mt={5}>
                     Management & Retention System

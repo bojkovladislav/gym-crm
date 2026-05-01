@@ -4,6 +4,13 @@ import { ColorSchemeScript, MantineProvider, createTheme } from '@mantine/core';
 
 const theme = createTheme({
     components: {
+        Text: {
+            styles: {
+                root: {
+                    color: 'var(--mantine-color-gray-6)',
+                },
+            },
+        },
         InputWrapper: {
             styles: {
                 label: {
