@@ -11,6 +11,13 @@ const theme = createTheme({
                 },
             },
         },
+        Title: {
+            styles: {
+                root: {
+                    color: 'var(--mantine-color-gray-6)',
+                },
+            },
+        },
         InputWrapper: {
             styles: {
                 label: {

@@ -1,6 +1,7 @@
 
 generator client {
   provider = "prisma-client"
+  output   = "../app/generated/prisma"
 }
 
 datasource db {
@@ -68,4 +69,42 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+enum MembershipPlan {
+  STANDARD
+  PREMIUM
+  VIP
+}
+
+enum MemberStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Member {
+  id           String         @id @default(uuid())
+  name         String
+  email        String         @unique
+  dob          DateTime?     
+  planId       String
+  plan         Plan           @relation(fields: [planId], references: [id])
+  status       MemberStatus   @default(INACTIVE) 
+  visits       Int            @default(0)
+  keyFobId     String?        @unique
+  joinedAt     DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@map("members")
+}
+
+model Plan {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  price       Float    @default(0.00)
+  members     Member[] 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("plans")
 }
