@@ -9,15 +9,15 @@ import {
 import { ReactNode } from 'react';
 
 export enum Role {
-    WORKER = 'worker',
-    ADMIN = 'admin',
-    OWNER = 'owner',
+    WORKER = 'WORKER',
+    ADMIN = 'ADMIN',
+    OWNER = 'OWNER',
 }
 
 interface Tab {
     title: string;
     icon: ReactNode;
-    roles: Role[]; // Updated to an array of roles
+    roles: Role[];
     href: string;
 }
 
@@ -31,7 +31,7 @@ export const tabs: Tab[] = [
     {
         title: 'Members',
         icon: <IconUsers size={20} />,
-        roles: [Role.ADMIN, Role.OWNER],
+        roles: [Role.WORKER, Role.ADMIN, Role.OWNER],
         href: '/members',
     },
     {

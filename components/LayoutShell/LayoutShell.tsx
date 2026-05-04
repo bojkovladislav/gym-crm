@@ -7,9 +7,10 @@ import { Tab } from '../Tab';
 
 interface Props {
     children: React.ReactNode;
+    userRole: Role | null;
 }
 
-export default function LayoutShell({ children }: Props) {
+export default function LayoutShell({ children, userRole }: Props) {
     return (
         <AppShell
             header={{ height: 60 }}
@@ -28,7 +29,9 @@ export default function LayoutShell({ children }: Props) {
             <AppShell.Navbar p='md'>
                 <Stack>
                     {tabs
-                        .filter((tab) => tab.roles.includes(Role.OWNER))
+                        .filter((tab) =>
+                            tab.roles.includes(userRole || Role.WORKER),
+                        )
                         .map(({ title, icon, href }) => (
                             <Tab
                                 key={title}

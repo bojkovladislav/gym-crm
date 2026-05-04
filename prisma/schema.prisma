@@ -8,12 +8,19 @@ datasource db {
   provider = "postgresql"
 }
 
+enum UserRole {
+  WORKER
+  ADMIN
+  OWNER
+}
+
 model User {
   id            String    @id
   name          String
   email         String
   emailVerified Boolean   @default(false)
   image         String?
+  role          UserRole  @default(WORKER)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
