@@ -1,32 +1,20 @@
 'use client';
 
 import {
-    ActionIcon,
-    Badge,
     Button,
     Card,
     Group,
-    Menu,
-    rem,
     Stack,
     Table,
     Text,
     TextInput,
     Loader,
 } from '@mantine/core';
-import {
-    IconBarcode,
-    IconCalendarClock,
-    IconCreditCard,
-    IconDotsVertical,
-    IconPencil,
-    IconSearch,
-    IconTrash,
-    IconUserPlus,
-} from '@tabler/icons-react';
+import { IconSearch, IconUserPlus } from '@tabler/icons-react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { AddMemberForm } from '../AddMemberForm';
+import { useCallback, useEffect, useState } from 'react';
+import Member from './Member';
+import { MemberForm } from '../MemberForm';
 
 export interface Member {
     id: string;
@@ -44,7 +32,6 @@ export interface Plan {
     id: string;
     name: string;
     price: number;
-    currency: string;
 }
 
 export default function Members() {
@@ -53,30 +40,32 @@ export default function Members() {
     const [plans, setPlans] = useState<Record<string, string>>({});
     const [loadingPlans, setLoadingPlans] = useState(false);
 
-    useEffect(() => {
-        async function fetchInitialData() {
-            try {
-                setLoadingPlans(true);
-                const memberResponse = await axios.get('/api/members');
-                setMembers(memberResponse.data);
+    const fetchInitialData = async () => {
+        try {
+            setLoadingPlans(true);
 
-                const planResponse = await axios.get('/api/plans');
-                const planMap = planResponse.data.reduce(
-                    (acc: Record<string, string>, plan: Plan) => {
-                        acc[plan.id] = plan.name;
-                        return acc;
-                    },
-                    {},
-                );
+            const memberResponse = await axios.get('/api/members');
+            setMembers(memberResponse.data);
 
-                setPlans(planMap);
-            } catch (error) {
-                console.error('Error fetching initial data!', error);
-            } finally {
-                setLoadingPlans(false);
-            }
+            const planResponse = await axios.get('/api/plans');
+            const planMap = planResponse.data.reduce(
+                (acc: Record<string, string>, plan: Plan) => {
+                    acc[plan.id] = plan.name;
+                    return acc;
+                },
+                {},
+            );
+
+            setPlans(planMap);
+        } catch (error) {
+            console.error('Error fetching initial data!', error);
+        } finally {
+            setLoadingPlans(false);
         }
+    };
 
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchInitialData();
     }, []);
 
@@ -98,14 +87,14 @@ export default function Members() {
                     </Text>
                 </div>
 
-                <AddMemberForm>
+                <MemberForm purpose='create' reloadMembers={fetchInitialData}>
                     <Button
                         leftSection={<IconUserPlus size={16} />}
                         radius='md'
                     >
                         Add Member
                     </Button>
-                </AddMemberForm>
+                </MemberForm>
             </Group>
 
             <Card shadow='sm' radius='md' padding='lg'>
@@ -144,110 +133,12 @@ export default function Members() {
                             </Table.Tr>
                         ) : filteredMembers.length > 0 ? (
                             filteredMembers.map((member) => (
-                                <Table.Tr key={member.id}>
-                                    <Table.Td>
-                                        <Text fw={500}>{member.name}</Text>
-                                    </Table.Td>
-                                    <Table.Td>{member.email}</Table.Td>
-                                    <Table.Td>
-                                        {plans[member.planId] || 'Loading...'}
-                                    </Table.Td>
-                                    <Table.Td>
-                                        <Badge
-                                            color={
-                                                member.status === 'ACTIVE'
-                                                    ? 'green'
-                                                    : 'red'
-                                            }
-                                            variant='light'
-                                        >
-                                            {member.status}
-                                        </Badge>
-                                    </Table.Td>
-                                    <Table.Td>
-                                        {member.visits} this month
-                                    </Table.Td>
-                                    <Table.Td>
-                                        {new Date(
-                                            member.joinedAt,
-                                        ).toLocaleDateString()}
-                                    </Table.Td>
-                                    <Table.Td>
-                                        <Group gap='xs' justify='flex-end'>
-                                            <ActionIcon
-                                                variant='subtle'
-                                                color='gray'
-                                            >
-                                                <IconBarcode
-                                                    style={{
-                                                        width: rem(16),
-                                                        height: rem(16),
-                                                    }}
-                                                />
-                                            </ActionIcon>
-
-                                            <Menu shadow='md' width={200}>
-                                                <Menu.Target>
-                                                    <ActionIcon
-                                                        variant='subtle'
-                                                        color='gray'
-                                                    >
-                                                        <IconDotsVertical
-                                                            style={{
-                                                                width: rem(16),
-                                                                height: rem(16),
-                                                            }}
-                                                        />
-                                                    </ActionIcon>
-                                                </Menu.Target>
-
-                                                <Menu.Dropdown>
-                                                    <Menu.Label>
-                                                        Application
-                                                    </Menu.Label>
-                                                    <Menu.Item
-                                                        leftSection={
-                                                            <IconPencil
-                                                                size={14}
-                                                            />
-                                                        }
-                                                    >
-                                                        Edit Profile
-                                                    </Menu.Item>
-                                                    <Menu.Item
-                                                        leftSection={
-                                                            <IconCreditCard
-                                                                size={14}
-                                                            />
-                                                        }
-                                                    >
-                                                        Manage Billing
-                                                    </Menu.Item>
-                                                    <Menu.Item
-                                                        leftSection={
-                                                            <IconCalendarClock
-                                                                size={14}
-                                                            />
-                                                        }
-                                                    >
-                                                        View Attendance
-                                                    </Menu.Item>
-                                                    <Menu.Divider />
-                                                    <Menu.Item
-                                                        color='red'
-                                                        leftSection={
-                                                            <IconTrash
-                                                                size={14}
-                                                            />
-                                                        }
-                                                    >
-                                                        Delete Member
-                                                    </Menu.Item>
-                                                </Menu.Dropdown>
-                                            </Menu>
-                                        </Group>
-                                    </Table.Td>
-                                </Table.Tr>
+                                <Member
+                                    key={member.id}
+                                    member={member}
+                                    plans={plans}
+                                    reloadMembers={fetchInitialData}
+                                />
                             ))
                         ) : (
                             <Table.Tr>

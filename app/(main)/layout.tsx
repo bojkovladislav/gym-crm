@@ -9,5 +9,7 @@ export default async function MainLayout({
 }) {
     const userRole = await getUserRoleAction();
 
-    return <LayoutShell userRole={userRole as Role}>{children}</LayoutShell>;
+    return (
+        <LayoutShell userRole={userRole.data as Role}>{children}</LayoutShell>
+    );
 }

@@ -19,14 +19,22 @@ import {
     IconUser,
     IconX,
 } from '@tabler/icons-react';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Member } from '../Members/Members';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import axios from 'axios';
 import { keyFobIdGenerator } from '@/helpers/keyFobIdGenerator';
+import { updateMember } from '@/actions/member.action';
+
+type Inputs = Omit<Member, 'visits' | 'joinedAt' | 'keyFobId' | 'status'>;
 
 interface Props {
-    children: ReactNode;
+    children?: ReactNode;
+    purpose: 'create' | 'edit';
+    defaultValues?: Inputs;
+    reloadMembers?: () => Promise<void>;
+    isOpened?: boolean;
+    onClose?: () => void;
 }
 
 interface Plan {
@@ -40,27 +48,32 @@ interface SelectOption {
     label: string;
 }
 
-type Inputs = Omit<
-    Member,
-    'id' | 'visits' | 'joinedAt' | 'keyFobId' | 'status'
->;
-
-export default function AddMemberForm({ children }: Props) {
-    const [opened, { open, close }] = useDisclosure(false);
+export default function MemberForm({
+    children,
+    purpose,
+    defaultValues,
+    isOpened = false,
+    reloadMembers,
+    onClose,
+}: Props) {
+    const [opened, { open, close }] = useDisclosure(isOpened);
     const [plans, setPlans] = useState<SelectOption[]>([]);
     const {
         control,
         reset,
+        watch,
         handleSubmit,
         formState: { errors, isLoading },
     } = useForm<Inputs>({
-        defaultValues: {
+        defaultValues: defaultValues || {
             name: '',
             email: '',
             planId: '',
             dob: '',
         },
     });
+
+    const id = watch('id');
 
     const getPlans = async () => {
         try {
@@ -85,31 +98,54 @@ export default function AddMemberForm({ children }: Props) {
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
         try {
-            const newMember = {
-                ...data,
-                dob: new Date(data.dob),
-                keyFobId: keyFobIdGenerator(data.name, data.dob),
-            };
+            if (purpose === 'create') {
+                const newMember = {
+                    ...data,
+                    dob: new Date(data.dob),
+                    keyFobId: keyFobIdGenerator(data.name, data.dob),
+                };
 
-            // subscription payment
+                // subscription payment
 
-            console.log(newMember);
+                await axios.post('/api/members', newMember);
+            } else if (purpose === 'edit') {
+                const updatedMember = {
+                    ...data,
+                    dob: new Date(data.dob),
+                };
 
-            await axios.post('/api/members', newMember);
+                await updateMember(id, updatedMember);
+            }
 
             reset();
-            // reload page.
+            if (reloadMembers) {
+                await reloadMembers();
+            }
+            close();
         } catch (error) {
-            console.error('Failed to add new Member ', error);
+            console.error(
+                `Failed to ${purpose === 'create' ? 'add' : 'edit'} Member `,
+                error,
+            );
         }
     };
+
+    useEffect(() => {
+        if (!opened && onClose) {
+            onClose();
+        }
+    }, [opened]);
 
     return (
         <>
             <Drawer
                 opened={opened}
                 onClose={close}
-                title='Add new member'
+                title={
+                    purpose === 'create'
+                        ? 'Add new member'
+                        : `Edit member ${defaultValues?.name}`
+                }
                 position='right'
             >
                 <form onSubmit={handleSubmit(onSubmit)}>

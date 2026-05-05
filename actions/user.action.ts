@@ -8,5 +8,14 @@ export async function getUserRoleAction() {
         throw new Error('Unauthorized! The session has expired!');
     }
 
-    return await getUserRoleById(session.user.id);
+    try {
+        const userRole = await getUserRoleById(session.user.id);
+
+        return { success: true, data: userRole };
+    } catch (error) {
+        return {
+            success: false,
+            error: 'Could not retrieve User Role.',
+        };
+    }
 }
