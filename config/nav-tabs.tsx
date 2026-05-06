@@ -5,6 +5,7 @@ import {
     IconLayoutDashboard,
     IconSettings,
     IconUsers,
+    IconUsersGroup,
 } from '@tabler/icons-react';
 import { ReactNode } from 'react';
 
@@ -33,6 +34,12 @@ export const tabs: Tab[] = [
         icon: <IconUsers size={20} />,
         roles: [Role.WORKER, Role.ADMIN, Role.OWNER],
         href: '/members',
+    },
+    {
+        title: 'Stuff',
+        icon: <IconUsersGroup size={20} />,
+        roles: [Role.ADMIN, Role.OWNER],
+        href: '/stuff',
     },
     {
         title: 'Equipment Log',

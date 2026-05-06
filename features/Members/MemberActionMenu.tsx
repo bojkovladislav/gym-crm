@@ -1,6 +1,6 @@
 'use client';
 
-import { ActionIcon, Menu, rem } from '@mantine/core';
+import { ActionIcon, Menu, rem, Text, Title } from '@mantine/core';
 import {
     IconCalendarClock,
     IconCreditCard,
@@ -12,6 +12,7 @@ import { MemberForm } from '../MemberForm';
 import { Member } from './Members';
 import { useState } from 'react';
 import { removeMember } from '@/actions/member.action';
+import { Modal } from '@/components/Modal/Modal';
 
 interface Props {
     currentMember: Member;
@@ -23,6 +24,7 @@ export default function MemberActionMenu({
     reloadMembers,
 }: Props) {
     const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+    const [requestForDeletion, setRequestForDeletion] = useState(false);
 
     const deleteMember = async () => {
         try {
@@ -33,8 +35,27 @@ export default function MemberActionMenu({
         }
     };
 
+    const markForDeletion = () => {
+        setRequestForDeletion(true);
+    };
+
     return (
         <>
+            <Modal
+                opened={requestForDeletion}
+                title='Delete Member'
+                onClose={() => setRequestForDeletion(false)}
+                confirmAction={deleteMember}
+            >
+                <Title order={4} fw={500} mb='1rem'>
+                    Are you sure you want to delete member{' '}
+                    <Text span c='red' fw={700} inherit>
+                        {`"${currentMember.name}"`}
+                    </Text>
+                    ?
+                </Title>
+            </Modal>
+
             {selectedMember && (
                 <MemberForm
                     purpose='edit'
@@ -80,7 +101,7 @@ export default function MemberActionMenu({
                     <Menu.Item
                         color='red'
                         leftSection={<IconTrash size={14} />}
-                        onClick={deleteMember}
+                        onClick={markForDeletion}
                     >
                         Delete Member
                     </Menu.Item>
