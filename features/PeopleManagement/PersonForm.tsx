@@ -16,7 +16,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 type InputType = 'text' | 'select' | 'checkbox';
 
-export interface NewPersonFormConfig {
+export interface PersonFormConfig {
     name: string;
     label: string;
     placeholder?: string;
@@ -28,7 +28,7 @@ export interface NewPersonFormConfig {
 }
 
 interface Props {
-    inputs: NewPersonFormConfig[];
+    inputs: PersonFormConfig[];
     onSubmit: () => void;
     title: string;
     children?: ReactNode;
@@ -36,7 +36,7 @@ interface Props {
     onClose?: () => void;
 }
 
-export default function AddNewPersonForm({
+export default function PersonForm({
     inputs,
     children,
     onSubmit,

@@ -11,7 +11,7 @@ interface Props {
 
 export default function Member({ member, plans, reloadMembers }: Props) {
     return (
-        <Table.Tr key={member.id}>
+        <Table.Tr>
             <Table.Td>
                 <Text fw={500}>{member.name}</Text>
             </Table.Td>

@@ -12,16 +12,20 @@ import {
 import { IconSearch } from '@tabler/icons-react';
 import { useState } from 'react';
 import Person from './Person';
-import AddNewPersonForm, { NewPersonFormConfig } from './AddNewPersonForm';
+import PersonForm, { PersonFormConfig } from './PersonForm';
+import { Action } from './PersonActionMenu';
 
 interface Props<T extends { name: string; email: string }> {
     entityInPlural: string;
-    newPersonFields: NewPersonFormConfig[];
+    newPersonFields: PersonFormConfig[];
     onNewPersonFormSubmit: () => void;
     formTitle: string;
     loading: boolean;
     tableHeaders: string[];
     subTitle: string;
+    personActions: Action[];
+    personInputs: PersonFormConfig[];
+    editOnSubmit?: () => void;
     people: T[];
 }
 
@@ -33,6 +37,9 @@ export default function PeopleManagement<
     onNewPersonFormSubmit,
     newPersonFields,
     loading,
+    personActions,
+    personInputs,
+    editOnSubmit,
     formTitle,
     tableHeaders,
     people,
@@ -57,7 +64,7 @@ export default function PeopleManagement<
                     </Text>
                 </div>
 
-                <AddNewPersonForm
+                <PersonForm
                     inputs={newPersonFields}
                     onSubmit={onNewPersonFormSubmit}
                     title={formTitle}
@@ -97,7 +104,13 @@ export default function PeopleManagement<
                             </Table.Tr>
                         ) : filteredPeople.length > 0 ? (
                             filteredPeople.map((person) => (
-                                <Person person={person} key={person.name} />
+                                <Person
+                                    person={person}
+                                    key={person.name}
+                                    inputs={personInputs}
+                                    personActions={personActions}
+                                    editOnSubmit={editOnSubmit}
+                                />
                             ))
                         ) : (
                             <Table.Tr>
