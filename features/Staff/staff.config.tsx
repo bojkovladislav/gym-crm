@@ -12,34 +12,48 @@ import { StaffMember } from './Staff';
 export const tableHeaders = ['Name', 'Email', 'Role'];
 export const fieldsToShow: (keyof StaffMember)[] = ['name', 'email', 'role'];
 
-export const getStaffFields = (): PersonFormConfig[] => [
-    {
-        name: 'name',
-        label: 'Full Name',
-        inputType: 'text',
-        icon: <IconUser style={{ width: rem(16) }} />,
-        rules: { required: 'Required' },
-    },
-    {
-        name: 'email',
-        label: 'Work Email',
-        inputType: 'text',
-        icon: <IconMail style={{ width: rem(16) }} />,
-        rules: { required: 'Required' },
-    },
-    {
-        name: 'role',
-        label: 'System Role',
-        inputType: 'select',
-        icon: <IconShieldLock style={{ width: rem(16) }} />,
-        data: [
-            { value: 'ADMIN', label: 'Administrator' },
-            { value: 'WORKER', label: 'Worker' },
-            { value: 'OWNER', label: 'Owner' },
-        ],
-        rules: { required: 'Please assign a role' },
-    },
-];
+export const getStaffFields = (isEdit: boolean = false): PersonFormConfig[] => {
+    const fields: PersonFormConfig[] = [
+        {
+            name: 'name',
+            label: 'Full Name',
+            inputType: 'text',
+            icon: <IconUser size={16} />,
+            rules: { required: 'Name is required' },
+        },
+        {
+            name: 'email',
+            label: 'Email',
+            inputType: 'text',
+            icon: <IconMail size={16} />,
+            rules: { required: 'Email is required' },
+        },
+        {
+            name: 'role',
+            label: 'Role',
+            inputType: 'select',
+            data: [
+                { value: 'ADMIN', label: 'Admin' },
+                { value: 'WORKER', label: 'Worker' },
+            ],
+            rules: { required: 'Role is required' },
+        },
+    ];
+
+    if (!isEdit) {
+        fields.push({
+            name: 'password',
+            label: 'Password',
+            inputType: 'password',
+            rules: {
+                required: 'Password is required',
+                minLength: { value: 8, message: 'At least 8 characters' },
+            },
+        });
+    }
+
+    return fields;
+};
 
 export const getStaffActions = (onDelete: (id: string) => void): Action[] => [
     {

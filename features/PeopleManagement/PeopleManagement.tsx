@@ -32,6 +32,7 @@ interface Props<T extends BasePerson> {
     // Complex Config
     personActions: Action[];
     personInputs: PersonFormConfig[];
+    personEditInputs?: PersonFormConfig[];
 
     // Callbacks
     addNewPerson: (data: T) => void;
@@ -43,6 +44,7 @@ export default function PeopleManagement<T extends BasePerson>({
     subTitle,
     addNewPerson,
     loading,
+    personEditInputs,
     personActions,
     entityInSingular,
     personInputs,
@@ -123,7 +125,11 @@ export default function PeopleManagement<T extends BasePerson>({
                                     key={person.name}
                                     person={person}
                                     fieldsToShow={fieldsToShow}
-                                    inputs={personInputs}
+                                    inputs={
+                                        personEditInputs
+                                            ? personEditInputs
+                                            : personInputs
+                                    }
                                     personActions={personActions}
                                     editPerson={editPerson}
                                 />

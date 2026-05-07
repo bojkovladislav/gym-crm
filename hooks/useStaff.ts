@@ -3,6 +3,7 @@ import axios from 'axios';
 import { StaffMember } from '@/features/Staff/Staff';
 import { updateUser } from '@/actions/user.action';
 import { deleteUser } from '@/services/user.service';
+import { authClient } from '@/lib/auth-client';
 
 export const useStaff = () => {
     const [staff, setStaff] = useState<StaffMember[]>([]);
@@ -21,10 +22,27 @@ export const useStaff = () => {
     };
 
     const addNewStaff = async (data: StaffMember) => {
-        console.log('data: ', data);
+        const { email, password, name, role } = data;
 
-        await axios.post('/api/staff', data);
-        await fetchStaff();
+        const { data: session, error } = await authClient.signUp.email({
+            email,
+            password,
+            name,
+            callbackURL: '/staff',
+            fetchOptions: {
+                body: {
+                    role: role,
+                },
+            },
+        });
+
+        if (error) {
+            console.error('Signup failed:', error.message);
+            throw new Error(error.message);
+        }
+
+        console.log('Staff created successfully:', session);
+        await fetchStaff(); // Refresh the list
     };
 
     const editStaff = async (id: string, data: StaffMember) => {
@@ -38,6 +56,7 @@ export const useStaff = () => {
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchStaff();
     }, []);
 

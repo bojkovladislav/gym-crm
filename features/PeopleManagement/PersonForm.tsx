@@ -5,6 +5,7 @@ import {
     Button,
     Drawer,
     Group,
+    PasswordInput,
     Select,
     Stack,
     TextInput,
@@ -21,7 +22,7 @@ import {
     useForm,
 } from 'react-hook-form';
 
-export type InputType = 'text' | 'select' | 'checkbox' | 'date';
+export type InputType = 'text' | 'select' | 'checkbox' | 'date' | 'password';
 
 export interface PersonFormConfig {
     name: string;
@@ -151,6 +152,13 @@ export default function PersonForm<T extends FieldValues>({
                                                     onDropdownOpen={
                                                         input.onDropdownOpen
                                                     }
+                                                />
+                                            );
+                                        case 'password':
+                                            return (
+                                                <PasswordInput
+                                                    {...commonProps}
+                                                    {...field}
                                                 />
                                             );
                                         case 'text':

@@ -14,6 +14,7 @@ export interface StaffMember {
     id: string;
     name: string;
     email: string;
+    password: string;
     image: string;
     role: Role;
 }
@@ -32,6 +33,7 @@ export default function Staff() {
             tableHeaders={tableHeaders}
             fieldsToShow={fieldsToShow}
             personInputs={getStaffFields()}
+            personEditInputs={getStaffFields(true)}
             personActions={getStaffActions(deleteStaff)}
             addNewPerson={addNewStaff}
             editPerson={editStaff}
