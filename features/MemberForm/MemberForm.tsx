@@ -29,8 +29,8 @@ import { updateMember } from '@/actions/member.action';
 type Inputs = Omit<Member, 'visits' | 'joinedAt' | 'keyFobId' | 'status'>;
 
 interface Props {
-    children?: ReactNode;
     purpose: 'create' | 'edit';
+    children?: ReactNode;
     defaultValues?: Inputs;
     reloadMembers?: () => Promise<void>;
     isOpened?: boolean;
