@@ -5,23 +5,33 @@ import { IconBarcode } from '@tabler/icons-react';
 import PersonActionMenu, { Action } from './PersonActionMenu';
 import { PersonFormConfig } from './PersonForm';
 
+export interface BasePerson {
+    name: string;
+    email: string;
+    id: string;
+}
+
 interface Props<T> {
     person: T;
     inputs: PersonFormConfig[];
+    fieldsToShow: string[];
     personActions: Action[];
-    editOnSubmit?: () => void;
+    editPerson?: (id: string, data: T) => void;
 }
 
-export default function Person<T extends { name: string; email: string }>({
+export default function Person<T extends BasePerson>({
     person,
     inputs,
+    fieldsToShow,
     personActions,
-    editOnSubmit,
+    editPerson,
 }: Props<T>) {
     return (
         <Table.Tr>
-            {(Object.keys(person) as Array<keyof T>).map((key) => (
-                <Table.Td key={key as string}>{String(person[key])}</Table.Td>
+            {fieldsToShow.map((field) => (
+                <Table.Td key={field as string}>
+                    {String(person[field as keyof T] ?? '')}
+                </Table.Td>
             ))}
 
             <Table.Td>
@@ -39,7 +49,7 @@ export default function Person<T extends { name: string; email: string }>({
                         currentPerson={person}
                         inputs={inputs}
                         actions={personActions}
-                        editOnSubmit={editOnSubmit}
+                        editPerson={editPerson}
                     />
                 </Group>
             </Table.Td>

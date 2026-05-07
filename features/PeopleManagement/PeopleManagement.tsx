@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    Button,
     Card,
     Group,
     Loader,
@@ -9,37 +10,44 @@ import {
     Text,
     TextInput,
 } from '@mantine/core';
-import { IconSearch } from '@tabler/icons-react';
+import { IconSearch, IconUserPlus } from '@tabler/icons-react';
 import { useState } from 'react';
-import Person from './Person';
+import Person, { BasePerson } from './Person';
 import PersonForm, { PersonFormConfig } from './PersonForm';
 import { Action } from './PersonActionMenu';
 
-interface Props<T extends { name: string; email: string }> {
-    entityInPlural: string;
-    newPersonFields: PersonFormConfig[];
-    onNewPersonFormSubmit: () => void;
-    formTitle: string;
+interface Props<T extends BasePerson> {
+    // Data & State
     loading: boolean;
-    tableHeaders: string[];
+    people: T[];
+
+    // UI Strings & Config
+    entityInPlural: string;
+    entityInSingular: string;
+    fieldsToShow: string[];
+    formTitle: string;
     subTitle: string;
+    tableHeaders: string[];
+
+    // Complex Config
     personActions: Action[];
     personInputs: PersonFormConfig[];
-    editOnSubmit?: () => void;
-    people: T[];
+
+    // Callbacks
+    addNewPerson: (data: T) => void;
+    editPerson?: (id: string, data: T) => void;
 }
 
-export default function PeopleManagement<
-    T extends { name: string; email: string },
->({
+export default function PeopleManagement<T extends BasePerson>({
     entityInPlural,
     subTitle,
-    onNewPersonFormSubmit,
-    newPersonFields,
+    addNewPerson,
     loading,
     personActions,
+    entityInSingular,
     personInputs,
-    editOnSubmit,
+    fieldsToShow,
+    editPerson,
     formTitle,
     tableHeaders,
     people,
@@ -65,10 +73,17 @@ export default function PeopleManagement<
                 </div>
 
                 <PersonForm
-                    inputs={newPersonFields}
-                    onSubmit={onNewPersonFormSubmit}
+                    inputs={personInputs}
+                    onSubmit={addNewPerson}
                     title={formTitle}
-                />
+                >
+                    <Button
+                        leftSection={<IconUserPlus size={16} />}
+                        radius='md'
+                    >
+                        Add {entityInSingular}
+                    </Button>
+                </PersonForm>
             </Group>
 
             <Card shadow='sm' radius='md' padding='lg'>
@@ -105,11 +120,12 @@ export default function PeopleManagement<
                         ) : filteredPeople.length > 0 ? (
                             filteredPeople.map((person) => (
                                 <Person
-                                    person={person}
                                     key={person.name}
+                                    person={person}
+                                    fieldsToShow={fieldsToShow}
                                     inputs={personInputs}
                                     personActions={personActions}
-                                    editOnSubmit={editOnSubmit}
+                                    editPerson={editPerson}
                                 />
                             ))
                         ) : (

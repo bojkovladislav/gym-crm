@@ -3,35 +3,61 @@
 import { Modal } from '@/components/Modal/Modal';
 import { ActionIcon, Menu, rem, Text, Title } from '@mantine/core';
 import { IconDotsVertical, IconTrash } from '@tabler/icons-react';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import PersonForm, { PersonFormConfig } from './PersonForm';
+import { BasePerson } from './Person';
 
 type SpecialActionType = 'edit' | 'delete';
 
-export interface Action {
-    name: SpecialActionType | (string & {});
+interface BaseAction {
+    label: string;
+    icon: ReactNode;
+    color?: string;
+}
+
+interface GeneralAction extends BaseAction {
+    name: Exclude<SpecialActionType, 'delete'> | (string & {});
     action: () => void;
 }
+
+interface DeleteAction extends BaseAction {
+    name: 'delete';
+    action: (id: string | number) => Promise<void>;
+}
+
+export type Action = GeneralAction | DeleteAction;
 
 interface Props<T> {
     currentPerson: T;
     inputs: PersonFormConfig[];
     actions: Action[];
-    editOnSubmit?: () => void;
+    editPerson?: (id: string, data: T) => void;
 }
 
-export default function PersonActionMenu<
-    T extends { name: string; email: string },
->({ currentPerson, actions, inputs, editOnSubmit }: Props<T>) {
+export default function PersonActionMenu<T extends BasePerson>({
+    currentPerson,
+    actions,
+    inputs,
+    editPerson: editOnSubmit,
+}: Props<T>) {
     const [requestForDeletion, setRequestForDeletion] = useState(false);
     const [selectedPerson, setSelectedPerson] = useState<T | null>(null);
     const deleteAction = actions.find((action) => action.name === 'delete');
 
-    function onSubmit() {
+    function onSubmit(data: T) {
         if (editOnSubmit) {
-            editOnSubmit();
+            editOnSubmit(currentPerson.id, data);
         }
     }
+
+    const defaultValues = inputs.reduce((acc, input) => {
+        const key = input.name as keyof T;
+
+        acc[input.name] = currentPerson[key];
+
+        return acc;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }, {} as any);
 
     return (
         <>
@@ -40,7 +66,7 @@ export default function PersonActionMenu<
                     opened={requestForDeletion}
                     title='Delete Member'
                     onClose={() => setRequestForDeletion(false)}
-                    confirmAction={deleteAction.action}
+                    confirmAction={() => deleteAction.action(currentPerson.id)}
                 >
                     <Title order={4} fw={500} mb='1rem'>
                         Are you sure you want to delete member{' '}
@@ -56,7 +82,10 @@ export default function PersonActionMenu<
                 <PersonForm
                     inputs={inputs}
                     title='Edit Person'
+                    defaultValues={defaultValues}
                     onSubmit={onSubmit}
+                    onClose={() => setSelectedPerson(null)}
+                    isOpened={!!selectedPerson}
                 />
             )}
 
@@ -80,13 +109,15 @@ export default function PersonActionMenu<
                         .map((action) => (
                             <Menu.Item
                                 key={action.name}
-                                onClick={
-                                    action.name === 'edit'
-                                        ? () => setSelectedPerson(currentPerson)
-                                        : action.action
-                                }
+                                onClick={() => {
+                                    if (action.name === 'edit') {
+                                        setSelectedPerson(currentPerson);
+                                    } else {
+                                        (action.action as () => void)();
+                                    }
+                                }}
                             >
-                                {action.name}
+                                {action.label}
                             </Menu.Item>
                         ))}
 
@@ -99,7 +130,7 @@ export default function PersonActionMenu<
                                 leftSection={<IconTrash size={14} />}
                                 onClick={() => setRequestForDeletion(true)}
                             >
-                                Delete Member
+                                {deleteAction.label}
                             </Menu.Item>
                         </>
                     )}

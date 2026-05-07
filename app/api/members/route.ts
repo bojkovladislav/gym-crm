@@ -13,8 +13,6 @@ export async function POST(request: Request) {
             );
         }
 
-        console.log(name, email, planId, keyFobId, dob);
-
         const newMember = await prisma.member.create({
             data: {
                 name,

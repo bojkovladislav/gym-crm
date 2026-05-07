@@ -9,56 +9,76 @@ import {
     Stack,
     TextInput,
 } from '@mantine/core';
+import { DateInput } from '@mantine/dates';
 import { useDisclosure } from '@mantine/hooks';
 import { IconDeviceFloppy, IconX } from '@tabler/icons-react';
 import { ReactNode, useEffect } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import {
+    Controller,
+    DefaultValues,
+    FieldValues,
+    SubmitHandler,
+    useForm,
+} from 'react-hook-form';
 
-type InputType = 'text' | 'select' | 'checkbox';
+export type InputType = 'text' | 'select' | 'checkbox' | 'date';
 
 export interface PersonFormConfig {
     name: string;
     label: string;
-    placeholder?: string;
     inputType: InputType;
+    placeholder?: string;
     icon?: ReactNode;
     rules?: object;
     data?: { value: string; label: string }[];
     onDropdownOpen?: () => void;
 }
 
-interface Props {
+interface Props<T extends FieldValues> {
     inputs: PersonFormConfig[];
-    onSubmit: () => void;
+    onSubmit: SubmitHandler<T>;
     title: string;
+    defaultValues?: T;
     children?: ReactNode;
     isOpened?: boolean;
     onClose?: () => void;
 }
 
-export default function PersonForm({
+export default function PersonForm<T extends FieldValues>({
     inputs,
     children,
     onSubmit,
     title,
+    defaultValues,
     isOpened,
     onClose,
-}: Props) {
+}: Props<T>) {
     const [opened, { open, close }] = useDisclosure(isOpened);
-    const values = inputs.map((input) => input.name);
+
+    const initialValues = inputs.reduce((acc, input) => {
+        acc[input.name] = '';
+        return acc;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }, {} as any) as T;
 
     const {
         control,
         reset,
         handleSubmit,
-        formState: { errors, isLoading },
-    } = useForm({
-        defaultValues: values,
+        formState: { errors },
+    } = useForm<T>({
+        defaultValues: (defaultValues || initialValues) as DefaultValues<T>,
     });
 
-    const handleCancel = () => {
+    const clearForm = () => {
         reset();
         close();
+    };
+
+    const submit: SubmitHandler<T> = (data) => {
+        onSubmit(data);
+
+        clearForm();
     };
 
     useEffect(() => {
@@ -75,12 +95,13 @@ export default function PersonForm({
                 title={title}
                 position='right'
             >
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(submit)}>
                     <Stack gap='md'>
                         {inputs.map((input) => (
                             <Controller
                                 key={input.name}
-                                name={input.name}
+                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                name={input.name as any}
                                 control={control}
                                 rules={input.rules}
                                 render={({ field }) => {
@@ -88,11 +109,36 @@ export default function PersonForm({
                                         ...field,
                                         label: input.label,
                                         placeholder: input.placeholder,
-                                        error: errors[input.name]?.message,
+                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                        error: (errors as any)[input.name]
+                                            ?.message,
                                         withAsterisk: !!input.rules,
+                                        leftSection: input.icon,
                                     };
 
                                     switch (input.inputType) {
+                                        case 'date':
+                                            return (
+                                                <DateInput
+                                                    {...commonProps}
+                                                    {...field}
+                                                    value={
+                                                        field.value &&
+                                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                                        (field.value as any) instanceof
+                                                            Date
+                                                            ? (field.value as unknown as Date)
+                                                            : field.value
+                                                              ? new Date(
+                                                                    field.value,
+                                                                )
+                                                              : null
+                                                    }
+                                                    onChange={(val) =>
+                                                        field.onChange(val)
+                                                    }
+                                                />
+                                            );
                                         case 'select':
                                             return (
                                                 <Select
@@ -106,10 +152,7 @@ export default function PersonForm({
                                         case 'text':
                                         default:
                                             return (
-                                                <TextInput
-                                                    {...commonProps}
-                                                    leftSection={input.icon}
-                                                />
+                                                <TextInput {...commonProps} />
                                             );
                                     }
                                 }}
@@ -121,7 +164,7 @@ export default function PersonForm({
                                 variant='outline'
                                 color='gray'
                                 leftSection={<IconX size={16} />}
-                                onClick={handleCancel}
+                                onClick={clearForm}
                             >
                                 Cancel
                             </Button>
