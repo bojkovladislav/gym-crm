@@ -36,7 +36,7 @@ export default function Members() {
             entityInPlural='Members'
             entityInSingular='Member'
             formTitle='Add New Member'
-            subTitle='Manage members here'
+            subTitle='View, edit, and onboard new gym members.'
             people={members}
             loading={loading}
             tableHeaders={tableHeaders}
