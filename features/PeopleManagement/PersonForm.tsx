@@ -75,10 +75,14 @@ export default function PersonForm<T extends FieldValues>({
         close();
     };
 
-    const submit: SubmitHandler<T> = (data) => {
-        onSubmit(data);
+    const submit: SubmitHandler<T> = async (data) => {
+        try {
+            await onSubmit(data);
 
-        clearForm();
+            clearForm();
+        } catch (error) {
+            console.error('Something went wrong!');
+        }
     };
 
     useEffect(() => {

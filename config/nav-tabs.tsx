@@ -36,10 +36,10 @@ export const tabs: Tab[] = [
         href: '/members',
     },
     {
-        title: 'Stuff',
+        title: 'Staff',
         icon: <IconUsersGroup size={20} />,
         roles: [Role.ADMIN, Role.OWNER],
-        href: '/stuff',
+        href: '/staff',
     },
     {
         title: 'Equipment Log',
