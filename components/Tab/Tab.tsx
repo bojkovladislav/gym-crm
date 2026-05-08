@@ -7,9 +7,10 @@ interface Props {
     href: string;
     title: string;
     icon: ReactNode;
+    highlighted: boolean;
 }
 
-export default function Tab({ href, title, icon }: Props) {
+export default function Tab({ href, title, icon, highlighted }: Props) {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
@@ -30,8 +31,10 @@ export default function Tab({ href, title, icon }: Props) {
                 style={{
                     borderRadius: '8px',
                     cursor: 'pointer',
-                    backgroundColor: isHovered ? '#f1f3f5' : 'transparent',
-                    transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+                    backgroundColor:
+                        highlighted || isHovered ? '#f1f3f5' : 'transparent',
+                    transform:
+                        highlighted || isHovered ? 'scale(1.02)' : 'scale(1)',
                     transition: 'all 0.2s ease-in-out',
                 }}
             >
@@ -39,7 +42,12 @@ export default function Tab({ href, title, icon }: Props) {
                     {icon}
                 </ThemeIcon>
 
-                <Text fw={500}>{title}</Text>
+                <Text
+                    fw={500}
+                    style={{ color: highlighted ? '#228be6' : '#868e96' }}
+                >
+                    {title}
+                </Text>
             </Group>
         </Link>
     );

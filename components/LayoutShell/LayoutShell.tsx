@@ -5,6 +5,7 @@ import { Logo } from '../Logo';
 import { Role, tabs } from '@/config/nav-tabs';
 import { Tab } from '../Tab';
 import { SignOut } from '@/features/SignOut';
+import { usePathname } from 'next/navigation';
 
 interface Props {
     children: React.ReactNode;
@@ -12,6 +13,8 @@ interface Props {
 }
 
 export default function LayoutShell({ children, userRole }: Props) {
+    const pathname = usePathname();
+
     return (
         <AppShell
             header={{ height: 60 }}
@@ -41,6 +44,7 @@ export default function LayoutShell({ children, userRole }: Props) {
                         .map(({ title, icon, href }) => (
                             <Tab
                                 key={title}
+                                highlighted={pathname === href}
                                 title={title}
                                 icon={icon}
                                 href={href}
