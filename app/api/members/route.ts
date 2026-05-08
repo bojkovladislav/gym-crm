@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { name, email, planId, keyFobId, dob } = body;
+        const { name, email, phoneNumber, planId, keyFobId, dob } = body;
 
         if (!name || !email) {
             return NextResponse.json(
@@ -17,6 +17,7 @@ export async function POST(request: Request) {
             data: {
                 name,
                 email,
+                phoneNumber,
                 planId,
                 dob,
                 status: 'INACTIVE',

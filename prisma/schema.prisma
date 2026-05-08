@@ -94,6 +94,7 @@ model Member {
   name         String
   email        String         @unique
   dob          DateTime?     
+  phoneNumber  String
   planId       String
   plan         Plan           @relation(fields: [planId], references: [id])
   status       MemberStatus   @default(INACTIVE) 

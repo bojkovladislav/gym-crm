@@ -5,6 +5,7 @@ import {
     IconCreditCard,
     IconCalendarClock,
     IconTrash,
+    IconPhone,
 } from '@tabler/icons-react';
 import { rem } from '@mantine/core';
 import { PersonFormConfig } from '../PeopleManagement/PersonForm';
@@ -52,6 +53,19 @@ export const getPersonFields = (plans: any[]): PersonFormConfig[] => [
         rules: {
             required: 'Required',
             pattern: { value: /^\S+@\S+$/i, message: 'Invalid' },
+        },
+    },
+    {
+        name: 'phoneNumber',
+        label: 'Phone Number',
+        inputType: 'text',
+        icon: <IconPhone style={{ width: rem(16) }} />,
+        rules: {
+            required: 'Required',
+            pattern: {
+                value: /^\+?[\d\s\-()]{7,15}$/,
+                message: 'Invalid phone number',
+            },
         },
     },
     {

@@ -15,6 +15,7 @@ export interface Member {
     dob: string;
     name: string;
     email: string;
+    phoneNumber: string;
     planId: string;
     status: string;
     visits: number;

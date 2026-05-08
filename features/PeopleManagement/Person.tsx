@@ -35,16 +35,7 @@ export default function Person<T extends BasePerson>({
             ))}
 
             <Table.Td>
-                <Group gap='xs' justify='flex-end'>
-                    <ActionIcon variant='subtle' color='gray'>
-                        <IconBarcode
-                            style={{
-                                width: rem(16),
-                                height: rem(16),
-                            }}
-                        />
-                    </ActionIcon>
-
+                <Group justify='flex-end'>
                     <PersonActionMenu
                         currentPerson={person}
                         inputs={inputs}
