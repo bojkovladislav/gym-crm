@@ -35,7 +35,7 @@ interface Props<T extends BasePerson> {
     personEditInputs?: PersonFormConfig[];
 
     // Callbacks
-    addNewPerson: (data: T) => void;
+    addNewPerson?: (data: T) => void;
     editPerson?: (id: string, data: T) => void;
 }
 
@@ -74,18 +74,20 @@ export default function PeopleManagement<T extends BasePerson>({
                     </Text>
                 </div>
 
-                <PersonForm
-                    inputs={personInputs}
-                    onSubmit={addNewPerson}
-                    title={formTitle}
-                >
-                    <Button
-                        leftSection={<IconUserPlus size={16} />}
-                        radius='md'
+                {addNewPerson && (
+                    <PersonForm
+                        inputs={personInputs}
+                        onSubmit={addNewPerson}
+                        title={formTitle}
                     >
-                        Add {entityInSingular}
-                    </Button>
-                </PersonForm>
+                        <Button
+                            leftSection={<IconUserPlus size={16} />}
+                            radius='md'
+                        >
+                            Add {entityInSingular}
+                        </Button>
+                    </PersonForm>
+                )}
             </Group>
 
             <Card shadow='sm' radius='md' padding='lg'>

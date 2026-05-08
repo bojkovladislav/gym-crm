@@ -11,6 +11,7 @@ import { rem } from '@mantine/core';
 import { PersonFormConfig } from '../PeopleManagement/PersonForm';
 import { Action } from '../PeopleManagement/PersonActionMenu';
 import { Member } from './Members';
+import { Role } from '@/config/nav-tabs';
 
 export const tableHeaders = [
     'Name',
@@ -102,5 +103,6 @@ export const getPersonActions = (onDelete: (id: string) => void): Action[] => [
         icon: <IconTrash size={14} />,
         color: 'red',
         action: ((id: string | number) => onDelete(id as string)) as () => void,
+        permissions: [Role.ADMIN, Role.OWNER],
     },
 ];

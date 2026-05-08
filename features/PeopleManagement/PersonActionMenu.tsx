@@ -3,9 +3,11 @@
 import { Modal } from '@/components/Modal/Modal';
 import { ActionIcon, Menu, rem, Text, Title } from '@mantine/core';
 import { IconDotsVertical, IconTrash } from '@tabler/icons-react';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import PersonForm, { PersonFormConfig } from './PersonForm';
 import { BasePerson } from './Person';
+import { Role } from '@/config/nav-tabs';
+import { getUserRoleAction } from '@/actions/user.action';
 
 type SpecialActionType = 'edit' | 'delete';
 
@@ -13,6 +15,7 @@ interface BaseAction {
     label: string;
     icon: ReactNode;
     color?: string;
+    permissions?: Role[];
 }
 
 interface GeneralAction extends BaseAction {
@@ -42,7 +45,21 @@ export default function PersonActionMenu<T extends BasePerson>({
 }: Props<T>) {
     const [requestForDeletion, setRequestForDeletion] = useState(false);
     const [selectedPerson, setSelectedPerson] = useState<T | null>(null);
-    const deleteAction = actions.find((action) => action.name === 'delete');
+    const [userRole, setUserRole] = useState<Role | null>(null);
+    const deleteAction = actions.find(
+        (action) =>
+            action.name === 'delete' &&
+            action.permissions?.includes(userRole as Role),
+    );
+    const actionsVisible = userRole
+        ? actions.some((action) => {
+              if (action.permissions) {
+                  return action.permissions.includes(userRole);
+              }
+
+              return action;
+          })
+        : false;
 
     function onSubmit(data: T) {
         if (editOnSubmit) {
@@ -58,6 +75,24 @@ export default function PersonActionMenu<T extends BasePerson>({
         return acc;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }, {} as any);
+
+    useEffect(() => {
+        async function getUserRole() {
+            try {
+                const role = await getUserRoleAction();
+
+                setUserRole(role.data as Role);
+            } catch (error) {
+                throw new Error('Failed to get User Role!');
+            }
+        }
+
+        getUserRole();
+    }, []);
+
+    if (!actionsVisible) {
+        return <Text>No Actions available</Text>;
+    }
 
     return (
         <>
@@ -105,7 +140,18 @@ export default function PersonActionMenu<T extends BasePerson>({
                     <Menu.Label>Application</Menu.Label>
 
                     {actions
-                        .filter((action) => action.name !== 'delete')
+                        .filter((action) => {
+                            const baseCheck = action.name !== 'delete';
+
+                            if (!action.permissions) {
+                                return baseCheck;
+                            }
+
+                            return (
+                                action.permissions.includes(userRole as Role) &&
+                                baseCheck
+                            );
+                        })
                         .map((action) => (
                             <Menu.Item
                                 key={action.name}

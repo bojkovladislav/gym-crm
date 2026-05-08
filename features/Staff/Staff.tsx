@@ -19,15 +19,21 @@ export interface StaffMember {
     role: Role;
 }
 
-export default function Staff() {
+export interface Props {
+    userRole: Role;
+}
+
+export default function Staff({ userRole }: Props) {
     const { staff, loading, addNewStaff, editStaff, deleteStaff } = useStaff();
+
+    const subTitle = `${userRole === Role.WORKER ? 'View' : 'Manage'} team roles, system access, and contact information.`;
 
     return (
         <PeopleManagement
             entityInPlural='Staff Members'
             entityInSingular='Staff Member'
             formTitle='Add Staff Member'
-            subTitle='Manage team roles, system access, and contact information.'
+            subTitle={subTitle}
             people={staff}
             loading={loading}
             tableHeaders={tableHeaders}
@@ -35,7 +41,7 @@ export default function Staff() {
             personInputs={getStaffFields()}
             personEditInputs={getStaffFields(true)}
             personActions={getStaffActions(deleteStaff)}
-            addNewPerson={addNewStaff}
+            addNewPerson={userRole === Role.WORKER ? undefined : addNewStaff}
             editPerson={editStaff}
         />
     );

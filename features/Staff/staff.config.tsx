@@ -8,6 +8,7 @@ import { rem } from '@mantine/core';
 import { PersonFormConfig } from '../PeopleManagement/PersonForm';
 import { Action } from '../PeopleManagement/PersonActionMenu';
 import { StaffMember } from './Staff';
+import { Role } from '@/config/nav-tabs';
 
 export const tableHeaders = ['Name', 'Email', 'Role'];
 export const fieldsToShow: (keyof StaffMember)[] = ['name', 'email', 'role'];
@@ -61,6 +62,7 @@ export const getStaffActions = (onDelete: (id: string) => void): Action[] => [
         label: 'Edit Permissions',
         icon: <IconShieldLock size={14} />,
         action: () => console.log('Editing permissions for'),
+        permissions: [Role.OWNER, Role.ADMIN],
     },
     {
         name: 'delete',
@@ -68,5 +70,6 @@ export const getStaffActions = (onDelete: (id: string) => void): Action[] => [
         icon: <IconTrash size={14} />,
         color: 'red',
         action: ((id: string | number) => onDelete(id as string)) as () => void,
+        permissions: [Role.OWNER],
     },
 ];
