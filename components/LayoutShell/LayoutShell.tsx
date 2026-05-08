@@ -4,6 +4,7 @@ import { AppShell, Group, Stack } from '@mantine/core';
 import { Logo } from '../Logo';
 import { Role, tabs } from '@/config/nav-tabs';
 import { Tab } from '../Tab';
+import { SignOut } from '@/features/SignOut';
 
 interface Props {
     children: React.ReactNode;
@@ -21,7 +22,14 @@ export default function LayoutShell({ children, userRole }: Props) {
             padding='md'
         >
             <AppShell.Header>
-                <Group justify='flex-end' pr='md' align='center' h='100%'>
+                <Group
+                    justify='space-between'
+                    pr='md'
+                    pl='md'
+                    align='center'
+                    h='100%'
+                >
+                    <SignOut />
                     <Logo />
                 </Group>
             </AppShell.Header>
