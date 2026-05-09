@@ -8,7 +8,7 @@ import {
     IconPhone,
 } from '@tabler/icons-react';
 import { rem } from '@mantine/core';
-import { PersonFormConfig } from '../PeopleManagement/PersonForm';
+import { BaseFormConfig } from '../../components/ActionForm/ActionForm';
 import { Action } from '../PeopleManagement/PersonActionMenu';
 import { Member } from './Members';
 import { Role } from '@/config/nav-tabs';
@@ -31,7 +31,7 @@ export const fieldsToShow: (keyof Member | 'plan')[] = [
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getPersonFields = (plans: any[]): PersonFormConfig[] => [
+export const getPersonFields = (plans: any[]): BaseFormConfig[] => [
     {
         name: 'name',
         label: 'Full Name',

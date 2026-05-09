@@ -4,17 +4,16 @@ import {
     IconShieldLock,
     IconTrash,
 } from '@tabler/icons-react';
-import { rem } from '@mantine/core';
-import { PersonFormConfig } from '../PeopleManagement/PersonForm';
 import { Action } from '../PeopleManagement/PersonActionMenu';
 import { StaffMember } from './Staff';
 import { Role } from '@/config/nav-tabs';
+import { BaseFormConfig } from '@/components/ActionForm/ActionForm';
 
 export const tableHeaders = ['Name', 'Email', 'Role'];
 export const fieldsToShow: (keyof StaffMember)[] = ['name', 'email', 'role'];
 
-export const getStaffFields = (isEdit: boolean = false): PersonFormConfig[] => {
-    const fields: PersonFormConfig[] = [
+export const getStaffFields = (isEdit: boolean = false): BaseFormConfig[] => {
+    const fields: BaseFormConfig[] = [
         {
             name: 'name',
             label: 'Full Name',

@@ -13,8 +13,9 @@ import {
 import { IconSearch, IconUserPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 import Person, { BasePerson } from './Person';
-import PersonForm, { PersonFormConfig } from './PersonForm';
 import { Action } from './PersonActionMenu';
+import ActionForm, { BaseFormConfig } from '@/components/ActionForm/ActionForm';
+import { PageHeader } from '@/components/PageHeader';
 
 interface Props<T extends BasePerson> {
     // Data & State
@@ -31,8 +32,8 @@ interface Props<T extends BasePerson> {
 
     // Complex Config
     personActions: Action[];
-    personInputs: PersonFormConfig[];
-    personEditInputs?: PersonFormConfig[];
+    personInputs: BaseFormConfig[];
+    personEditInputs?: BaseFormConfig[];
 
     // Callbacks
     addNewPerson?: (data: T) => void;
@@ -64,31 +65,14 @@ export default function PeopleManagement<T extends BasePerson>({
 
     return (
         <Stack>
-            <Group justify='space-between' mb='lg'>
-                <div>
-                    <Text size='xl' fw={700}>
-                        {entityInPlural}
-                    </Text>
-                    <Text size='sm' c='dimmed'>
-                        {subTitle}
-                    </Text>
-                </div>
-
-                {addNewPerson && (
-                    <PersonForm
-                        inputs={personInputs}
-                        onSubmit={addNewPerson}
-                        title={formTitle}
-                    >
-                        <Button
-                            leftSection={<IconUserPlus size={16} />}
-                            radius='md'
-                        >
-                            Add {entityInSingular}
-                        </Button>
-                    </PersonForm>
-                )}
-            </Group>
+            <PageHeader
+                entityInPlural={entityInPlural}
+                entityInSingular={entityInSingular}
+                subTitle={subTitle}
+                formTitle={formTitle}
+                inputs={personInputs}
+                onSubmit={addNewPerson}
+            />
 
             <Card shadow='sm' radius='md' padding='lg'>
                 <TextInput

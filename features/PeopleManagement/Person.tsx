@@ -1,9 +1,8 @@
 'use client';
 
-import { ActionIcon, Group, rem, Table } from '@mantine/core';
-import { IconBarcode } from '@tabler/icons-react';
+import { Group, Table } from '@mantine/core';
 import PersonActionMenu, { Action } from './PersonActionMenu';
-import { PersonFormConfig } from './PersonForm';
+import { BaseFormConfig } from '../../components/ActionForm/ActionForm';
 
 export interface BasePerson {
     name: string;
@@ -13,7 +12,7 @@ export interface BasePerson {
 
 interface Props<T> {
     person: T;
-    inputs: PersonFormConfig[];
+    inputs: BaseFormConfig[];
     fieldsToShow: string[];
     personActions: Action[];
     editPerson?: (id: string, data: T) => void;

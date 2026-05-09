@@ -24,7 +24,7 @@ import {
 
 export type InputType = 'text' | 'select' | 'checkbox' | 'date' | 'password';
 
-export interface PersonFormConfig {
+export interface BaseFormConfig {
     name: string;
     label: string;
     inputType: InputType;
@@ -36,7 +36,7 @@ export interface PersonFormConfig {
 }
 
 interface Props<T extends FieldValues> {
-    inputs: PersonFormConfig[];
+    inputs: BaseFormConfig[];
     onSubmit: SubmitHandler<T>;
     title: string;
     defaultValues?: T;
@@ -45,7 +45,7 @@ interface Props<T extends FieldValues> {
     onClose?: () => void;
 }
 
-export default function PersonForm<T extends FieldValues>({
+export default function ActionForm<T extends FieldValues>({
     inputs,
     children,
     onSubmit,
@@ -185,7 +185,7 @@ export default function PersonForm<T extends FieldValues>({
                                 color='blue'
                                 leftSection={<IconDeviceFloppy size={16} />}
                             >
-                                Save Member
+                                Save
                             </Button>
                         </Group>
                     </Stack>

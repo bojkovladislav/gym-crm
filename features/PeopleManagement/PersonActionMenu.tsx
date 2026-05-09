@@ -4,7 +4,9 @@ import { Modal } from '@/components/Modal/Modal';
 import { ActionIcon, Menu, rem, Text, Title } from '@mantine/core';
 import { IconDotsVertical, IconTrash } from '@tabler/icons-react';
 import { ReactNode, useEffect, useState } from 'react';
-import PersonForm, { PersonFormConfig } from './PersonForm';
+import ActionForm, {
+    BaseFormConfig,
+} from '../../components/ActionForm/ActionForm';
 import { BasePerson } from './Person';
 import { Role } from '@/config/nav-tabs';
 import { getUserRoleAction } from '@/actions/user.action';
@@ -32,7 +34,7 @@ export type Action = GeneralAction | DeleteAction;
 
 interface Props<T> {
     currentPerson: T;
-    inputs: PersonFormConfig[];
+    inputs: BaseFormConfig[];
     actions: Action[];
     editPerson?: (id: string, data: T) => void;
 }
@@ -114,7 +116,7 @@ export default function PersonActionMenu<T extends BasePerson>({
             )}
 
             {selectedPerson && (
-                <PersonForm
+                <ActionForm
                     inputs={inputs}
                     title='Edit Person'
                     defaultValues={defaultValues}
