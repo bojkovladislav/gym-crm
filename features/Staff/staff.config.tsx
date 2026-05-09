@@ -4,10 +4,10 @@ import {
     IconShieldLock,
     IconTrash,
 } from '@tabler/icons-react';
-import { Action } from '../PeopleManagement/PersonActionMenu';
 import { StaffMember } from './Staff';
 import { Role } from '@/config/nav-tabs';
 import { BaseFormConfig } from '@/components/ActionForm/ActionForm';
+import { Action } from '../ActionMenu/ActionMenu';
 
 export const tableHeaders = ['Name', 'Email', 'Role'];
 export const fieldsToShow: (keyof StaffMember)[] = ['name', 'email', 'role'];

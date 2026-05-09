@@ -2,23 +2,20 @@ import { Center, SimpleGrid, Stack, Text, Title } from '@mantine/core';
 import { Equipment } from './EquipmentLog';
 import { IconSearchOff } from '@tabler/icons-react';
 import { EquipmentCard } from './EquipmentCard';
+import { BaseFormConfig } from '@/components/ActionForm/ActionForm';
 
 interface Props {
     equipment: Equipment[];
+    inputs: BaseFormConfig[];
     removeEquipment: (id: string) => void;
-    editEquipment: (
-        id: string,
-        name: string,
-        category: string,
-        serialNumber: string,
-        location: string,
-    ) => void;
+    editEquipment: (id: string, data: Equipment) => void;
 }
 
 export default function EquipmentContent({
     equipment,
     removeEquipment,
     editEquipment,
+    inputs,
 }: Props) {
     if (equipment.length === 0) {
         return (
@@ -45,6 +42,7 @@ export default function EquipmentContent({
                     key={item.id}
                     equipment={item}
                     editEquipment={editEquipment}
+                    inputs={inputs}
                     removeEquipment={removeEquipment}
                 />
             ))}

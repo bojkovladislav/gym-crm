@@ -7,7 +7,6 @@ import { ReactNode, useEffect, useState } from 'react';
 import ActionForm, {
     BaseFormConfig,
 } from '../../components/ActionForm/ActionForm';
-import { BasePerson } from './Person';
 import { Role } from '@/config/nav-tabs';
 import { getUserRoleAction } from '@/actions/user.action';
 
@@ -33,17 +32,17 @@ interface DeleteAction extends BaseAction {
 export type Action = GeneralAction | DeleteAction;
 
 interface Props<T> {
-    currentPerson: T;
+    currentObject: T;
     inputs: BaseFormConfig[];
     actions: Action[];
-    editPerson?: (id: string, data: T) => void;
+    editObject?: (id: string, data: T) => void;
 }
 
-export default function PersonActionMenu<T extends BasePerson>({
-    currentPerson,
+export default function ActionMenu<T extends { id: string; name: string }>({
+    currentObject,
     actions,
     inputs,
-    editPerson: editOnSubmit,
+    editObject,
 }: Props<T>) {
     const [requestForDeletion, setRequestForDeletion] = useState(false);
     const [selectedPerson, setSelectedPerson] = useState<T | null>(null);
@@ -64,15 +63,15 @@ export default function PersonActionMenu<T extends BasePerson>({
         : false;
 
     function onSubmit(data: T) {
-        if (editOnSubmit) {
-            editOnSubmit(currentPerson.id, data);
+        if (editObject) {
+            editObject(currentObject.id, data);
         }
     }
 
     const defaultValues = inputs.reduce((acc, input) => {
         const key = input.name as keyof T;
 
-        acc[input.name] = currentPerson[key];
+        acc[input.name] = currentObject[key];
 
         return acc;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -103,12 +102,12 @@ export default function PersonActionMenu<T extends BasePerson>({
                     opened={requestForDeletion}
                     title='Delete Member'
                     onClose={() => setRequestForDeletion(false)}
-                    confirmAction={() => deleteAction.action(currentPerson.id)}
+                    confirmAction={() => deleteAction.action(currentObject.id)}
                 >
                     <Title order={4} fw={500} mb='1rem'>
                         Are you sure you want to delete member{' '}
                         <Text span c='red' fw={700} inherit>
-                            {`"${currentPerson.name}"`}
+                            {`"${currentObject.name}"`}
                         </Text>
                         ?
                     </Title>
@@ -159,7 +158,7 @@ export default function PersonActionMenu<T extends BasePerson>({
                                 key={action.name}
                                 onClick={() => {
                                     if (action.name === 'edit') {
-                                        setSelectedPerson(currentPerson);
+                                        setSelectedPerson(currentObject);
                                     } else {
                                         (action.action as () => void)();
                                     }

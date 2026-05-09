@@ -1,6 +1,7 @@
 'use server';
 
 import { EquipmentStatus } from '@/app/generated/prisma/enums';
+import { Equipment } from '@/features/EquipmentLog/EquipmentLog';
 import prisma from '@/lib/prisma';
 
 export async function getEquipmentStats() {
@@ -93,23 +94,13 @@ export async function createEquipment(
     return newEquipment;
 }
 
-export async function editEquipment(
-    id: string,
-
-    name: string,
-    category: string,
-    serialNumber: string,
-    location: string,
-) {
+export async function editEquipment(id: string, data: Equipment) {
     const updatedEquipment = await prisma.equipment.update({
         where: {
             id,
         },
         data: {
-            name,
-            category,
-            serialNumber,
-            location,
+            ...data,
         },
     });
 

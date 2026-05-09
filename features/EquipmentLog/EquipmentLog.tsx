@@ -83,6 +83,7 @@ export default function EquipmentLog() {
             <EquipmentContent
                 equipment={equipment}
                 removeEquipment={removeEquipment}
+                inputs={equipmentInputs}
                 editEquipment={editEquipment}
             />
         </Stack>

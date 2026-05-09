@@ -1,21 +1,12 @@
 'use client';
 
-import {
-    Button,
-    Card,
-    Group,
-    Loader,
-    Stack,
-    Table,
-    Text,
-    TextInput,
-} from '@mantine/core';
-import { IconSearch, IconUserPlus } from '@tabler/icons-react';
+import { Card, Loader, Stack, Table, Text, TextInput } from '@mantine/core';
+import { IconSearch } from '@tabler/icons-react';
 import { useState } from 'react';
 import Person, { BasePerson } from './Person';
-import { Action } from './PersonActionMenu';
-import ActionForm, { BaseFormConfig } from '@/components/ActionForm/ActionForm';
+import { BaseFormConfig } from '@/components/ActionForm/ActionForm';
 import { PageHeader } from '@/components/PageHeader';
+import { Action } from '../ActionMenu/ActionMenu';
 
 interface Props<T extends BasePerson> {
     // Data & State

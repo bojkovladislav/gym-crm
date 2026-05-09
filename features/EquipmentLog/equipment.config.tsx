@@ -1,10 +1,18 @@
 import { BaseFormConfig } from '@/components/ActionForm/ActionForm';
+import { Role } from '@/config/nav-tabs';
 import {
     IconBarbell,
     IconCategory,
+    IconEdit,
+    IconHistory,
+    IconInfoCircle,
     IconMapPin,
     IconNumbers,
+    IconTools,
+    IconTrash,
 } from '@tabler/icons-react';
+import { Action } from '../ActionMenu/ActionMenu';
+import { Equipment } from './EquipmentLog';
 
 export const equipmentInputs: BaseFormConfig[] = [
     {
@@ -44,5 +52,42 @@ export const equipmentInputs: BaseFormConfig[] = [
         placeholder: 'e.g., Main Floor, Zone B',
         icon: <IconMapPin size={18} />,
         rules: { required: 'Please out the location field' },
+    },
+];
+
+export const getEquipmentActions = (
+    onDelete: (id: string) => void,
+): Action[] => [
+    {
+        name: 'edit',
+        label: 'Edit Equipment',
+        icon: <IconEdit size={14} />,
+        action: () => {},
+    },
+    {
+        name: 'details',
+        label: 'View Details',
+        icon: <IconInfoCircle size={14} />,
+        action: () => {},
+    },
+    {
+        name: 'maintenance',
+        label: 'Maintenance Logs',
+        icon: <IconHistory size={14} />,
+        action: () => {},
+    },
+    {
+        name: 'report',
+        label: 'Request Repair',
+        icon: <IconTools size={14} />,
+        action: () => {},
+    },
+    {
+        name: 'delete',
+        label: 'Delete Equipment',
+        icon: <IconTrash size={14} />,
+        color: 'red',
+        action: ((id: string | number) => onDelete(id as string)) as () => void,
+        permissions: [Role.ADMIN, Role.OWNER],
     },
 ];

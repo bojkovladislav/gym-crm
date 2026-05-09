@@ -9,28 +9,21 @@ import {
     ThemeIcon,
 } from '@mantine/core';
 import { Equipment } from './EquipmentLog';
-import {
-    IconDotsVertical,
-    IconEdit,
-    IconHash,
-    IconMapPin,
-    IconTrash,
-} from '@tabler/icons-react';
+import { IconDotsVertical, IconHash, IconMapPin } from '@tabler/icons-react';
+import { ActionMenu } from '../ActionMenu';
+import { BaseFormConfig } from '@/components/ActionForm/ActionForm';
+import { getEquipmentActions } from './equipment.config';
 
 interface Props {
     equipment: Equipment;
+    inputs: BaseFormConfig[];
     removeEquipment: (id: string) => void;
-    editEquipment: (
-        id: string,
-        name: string,
-        category: string,
-        serialNumber: string,
-        location: string,
-    ) => void;
+    editEquipment: (id: string, data: Equipment) => void;
 }
 
 export function EquipmentCard({
     equipment,
+    inputs,
     removeEquipment,
     editEquipment,
 }: Props) {
@@ -92,26 +85,12 @@ export function EquipmentCard({
             </Stack>
 
             <Group justify='flex-end' mt='lg'>
-                <Menu position='bottom-end' shadow='md'>
-                    <Menu.Target>
-                        <ActionIcon variant='subtle' color='gray'>
-                            <IconDotsVertical size={16} />
-                        </ActionIcon>
-                    </Menu.Target>
-
-                    <Menu.Dropdown>
-                        <Menu.Label>Actions</Menu.Label>
-                        <Menu.Item leftSection={<IconEdit size={14} />}>
-                            Edit Details
-                        </Menu.Item>
-                        <Menu.Item
-                            leftSection={<IconTrash size={14} />}
-                            color='red'
-                        >
-                            Remove
-                        </Menu.Item>
-                    </Menu.Dropdown>
-                </Menu>
+                <ActionMenu
+                    currentObject={equipment}
+                    inputs={inputs}
+                    actions={getEquipmentActions(removeEquipment)}
+                    editObject={editEquipment}
+                />
             </Group>
         </Card>
     );

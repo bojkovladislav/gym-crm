@@ -9,9 +9,9 @@ import {
 } from '@tabler/icons-react';
 import { rem } from '@mantine/core';
 import { BaseFormConfig } from '../../components/ActionForm/ActionForm';
-import { Action } from '../PeopleManagement/PersonActionMenu';
 import { Member } from './Members';
 import { Role } from '@/config/nav-tabs';
+import { Action } from '../ActionMenu/ActionMenu';
 
 export const tableHeaders = [
     'Name',

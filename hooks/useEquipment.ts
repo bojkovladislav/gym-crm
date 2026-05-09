@@ -66,22 +66,10 @@ export const useEquipment = () => {
         }
     };
 
-    const editEquipment = async (
-        id: string,
-        name: string,
-        category: string,
-        serialNumber: string,
-        location: string,
-    ) => {
+    const editEquipment = async (id: string, data: Equipment) => {
         try {
             setLoading(true);
-            const result = await editEquipmentAction(
-                id,
-                name,
-                category,
-                serialNumber,
-                location,
-            );
+            const result = await editEquipmentAction(id, data);
 
             if (!result.success) throw new Error(result.error);
 

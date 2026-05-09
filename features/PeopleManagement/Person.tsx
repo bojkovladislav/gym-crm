@@ -1,8 +1,9 @@
 'use client';
 
 import { Group, Table } from '@mantine/core';
-import PersonActionMenu, { Action } from './PersonActionMenu';
 import { BaseFormConfig } from '../../components/ActionForm/ActionForm';
+import { ActionMenu } from '../ActionMenu';
+import { Action } from '../ActionMenu/ActionMenu';
 
 export interface BasePerson {
     name: string;
@@ -35,11 +36,11 @@ export default function Person<T extends BasePerson>({
 
             <Table.Td>
                 <Group justify='flex-end'>
-                    <PersonActionMenu
-                        currentPerson={person}
+                    <ActionMenu
+                        currentObject={person}
                         inputs={inputs}
                         actions={personActions}
-                        editPerson={editPerson}
+                        editObject={editPerson}
                     />
                 </Group>
             </Table.Td>

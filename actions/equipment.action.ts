@@ -1,3 +1,4 @@
+import { Equipment } from '@/features/EquipmentLog/EquipmentLog';
 import {
     getEquipmentStats,
     getFilteredEquipment,
@@ -56,21 +57,9 @@ export async function createEquipmentAction(
     }
 }
 
-export async function editEquipmentAction(
-    id: string,
-    name: string,
-    category: string,
-    serialNumber: string,
-    location: string,
-) {
+export async function editEquipmentAction(id: string, data: Equipment) {
     try {
-        const updatedEquipment = await editEquipment(
-            id,
-            name,
-            category,
-            serialNumber,
-            location,
-        );
+        const updatedEquipment = await editEquipment(id, data);
 
         return { success: true, data: updatedEquipment };
     } catch (error) {
