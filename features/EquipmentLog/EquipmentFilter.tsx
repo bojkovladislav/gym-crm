@@ -25,7 +25,7 @@ export default function EquipmentFilter({ filters, onFilterChange }: Props) {
                 <Group align='flex-end' gap='md'>
                     <TextInput
                         label='Search'
-                        placeholder='Search by name, serial, or location...'
+                        placeholder='Search by name...'
                         leftSection={<IconSearch size={16} />}
                         value={filters.search}
                         onChange={(e) =>
