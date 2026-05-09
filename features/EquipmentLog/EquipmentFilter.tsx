@@ -4,6 +4,7 @@ import {
     IconSearch,
     IconSortDescending,
 } from '@tabler/icons-react';
+import { equipmentCategories, equipmentStatuses } from './equipment.config';
 
 interface Props {
     filters: {
@@ -41,12 +42,7 @@ export default function EquipmentFilter({ filters, onFilterChange }: Props) {
                         leftSection={<IconFilter size={16} />}
                         value={filters.category}
                         onChange={(val) => onFilterChange('category', val)}
-                        data={[
-                            { label: 'Cardio', value: 'CARDIO' },
-                            { label: 'Strength', value: 'STRENGTH' },
-                            { label: 'Free Weights', value: 'FREE_WEIGHTS' },
-                            { label: 'Recovery', value: 'RECOVERY' },
-                        ]}
+                        data={equipmentCategories}
                         clearable
                         style={{ width: 200 }}
                         radius='md'
@@ -58,14 +54,7 @@ export default function EquipmentFilter({ filters, onFilterChange }: Props) {
                         leftSection={<IconSortDescending size={16} />}
                         value={filters.status}
                         onChange={(val) => onFilterChange('status', val)}
-                        data={[
-                            { label: 'Operational', value: 'OPERATIONAL' },
-                            {
-                                label: 'Maintenance Required',
-                                value: 'MAINTENANCE_REQUIRED',
-                            },
-                            { label: 'Out of Order', value: 'OUT_OF_ORDER' },
-                        ]}
+                        data={equipmentStatuses}
                         clearable
                         style={{ width: 180 }}
                         radius='md'

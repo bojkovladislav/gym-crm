@@ -120,14 +120,22 @@ model Plan {
 enum EquipmentStatus {
   OPERATIONAL
   MAINTENANCE_REQUIRED
+  UNDER_MAINTENANCE
   OUT_OF_ORDER
   DECOMMISSIONED
+}
+
+enum EquipmentCategory {
+  CARDIO
+  STRENGTH
+  FREE_WEIGHTS
+  RECOVERY
 }
 
 model Equipment {
   id                String           @id @default(cuid())
   name              String
-  category          String           
+  category          EquipmentCategory           
   serialNumber      String?          @unique
   status            EquipmentStatus  @default(OPERATIONAL)
   purchaseDate      DateTime?

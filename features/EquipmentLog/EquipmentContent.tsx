@@ -1,5 +1,5 @@
 import { Center, SimpleGrid, Stack, Text, Title } from '@mantine/core';
-import { Equipment } from './EquipmentLog';
+import { Equipment, MaintenanceRequestData } from './EquipmentLog';
 import { IconSearchOff } from '@tabler/icons-react';
 import { EquipmentCard } from './EquipmentCard';
 import { BaseFormConfig } from '@/components/ActionForm/ActionForm';
@@ -8,12 +8,14 @@ interface Props {
     equipment: Equipment[];
     inputs: BaseFormConfig[];
     removeEquipment: (id: string) => void;
+    requestMaintenance: (id: string, data: MaintenanceRequestData) => void;
     editEquipment: (id: string, data: Equipment) => void;
 }
 
 export default function EquipmentContent({
     equipment,
     removeEquipment,
+    requestMaintenance,
     editEquipment,
     inputs,
 }: Props) {
@@ -44,6 +46,7 @@ export default function EquipmentContent({
                     editEquipment={editEquipment}
                     inputs={inputs}
                     removeEquipment={removeEquipment}
+                    requestMaintenance={requestMaintenance}
                 />
             ))}
         </SimpleGrid>

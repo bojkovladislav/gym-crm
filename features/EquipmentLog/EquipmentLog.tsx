@@ -4,7 +4,10 @@ import { PageHeader } from '@/components/PageHeader';
 import { Stack } from '@mantine/core';
 import { EquipmentStats } from './EquipmentStats';
 import { useEffect, useState } from 'react';
-import { EquipmentStatus } from '@/app/generated/prisma/enums';
+import {
+    EquipmentCategory,
+    EquipmentStatus,
+} from '@/app/generated/prisma/enums';
 import EquipmentContent from './EquipmentContent';
 import EquipmentFilter from './EquipmentFilter';
 import { equipmentInputs } from './equipment.config';
@@ -13,7 +16,7 @@ import { useEquipment } from '@/hooks/useEquipment';
 export interface Equipment {
     id: string;
     name: string;
-    category: string;
+    category: EquipmentCategory;
     status: EquipmentStatus;
     serialNumber: string | null;
     location: string | null;
@@ -26,6 +29,12 @@ export interface Equipment {
     };
 }
 
+export interface MaintenanceRequestData {
+    requestTitle: string;
+    date: string;
+    cost: number;
+}
+
 export default function EquipmentLog() {
     const {
         equipment,
@@ -34,6 +43,7 @@ export default function EquipmentLog() {
         addNewEquipment,
         editEquipment,
         removeEquipment,
+        requestMaintenance,
         fetchEquipment,
     } = useEquipment();
 
@@ -85,6 +95,7 @@ export default function EquipmentLog() {
                 removeEquipment={removeEquipment}
                 inputs={equipmentInputs}
                 editEquipment={editEquipment}
+                requestMaintenance={requestMaintenance}
             />
         </Stack>
     );

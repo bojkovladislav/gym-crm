@@ -5,9 +5,14 @@ import {
     editEquipmentAction,
     getEquipmentAction,
     getEquipmentStatsAction,
+    requestMaintenanceAction,
 } from '@/actions/equipment.action';
-import { Equipment } from '@/features/EquipmentLog/EquipmentLog';
+import {
+    Equipment,
+    MaintenanceRequestData,
+} from '@/features/EquipmentLog/EquipmentLog';
 import { EquipmentStatsData } from '@/features/EquipmentLog/EquipmentStats';
+import { EquipmentCategory } from '@/app/generated/prisma/enums';
 
 export const useEquipment = () => {
     const [equipment, setEquipment] = useState<Equipment[]>([]);
@@ -16,7 +21,7 @@ export const useEquipment = () => {
 
     const fetchEquipment = async (filters: {
         search?: string;
-        category?: string;
+        category?: EquipmentCategory;
         status?: string;
     }) => {
         try {
@@ -86,6 +91,23 @@ export const useEquipment = () => {
         }
     };
 
+    const requestMaintenance = async (
+        id: string,
+        data: MaintenanceRequestData,
+    ) => {
+        try {
+            const result = await requestMaintenanceAction(id, data);
+
+            if (!result.success) throw new Error(result.error);
+
+            await fetchEquipment({});
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.error('Maintenance request failed:', error.message);
+            throw error;
+        }
+    };
+
     const removeEquipment = async (id: string) => {
         try {
             setLoading(true);
@@ -109,6 +131,7 @@ export const useEquipment = () => {
         loading,
         addNewEquipment,
         editEquipment,
+        requestMaintenance,
         removeEquipment,
         fetchEquipment,
     };

@@ -1,22 +1,17 @@
-import {
-    ActionIcon,
-    Badge,
-    Card,
-    Group,
-    Menu,
-    Stack,
-    Text,
-    ThemeIcon,
-} from '@mantine/core';
-import { Equipment } from './EquipmentLog';
-import { IconDotsVertical, IconHash, IconMapPin } from '@tabler/icons-react';
+'use client';
+
+import { Badge, Card, Group, Stack, Text, ThemeIcon } from '@mantine/core';
+import { Equipment, MaintenanceRequestData } from './EquipmentLog';
 import { ActionMenu } from '../ActionMenu';
-import { BaseFormConfig } from '@/components/ActionForm/ActionForm';
-import { getEquipmentActions } from './equipment.config';
+import ActionForm, { BaseFormConfig } from '@/components/ActionForm/ActionForm';
+import { getEquipmentActions, maintenanceInputs } from './equipment.config';
+import { IconHash, IconMapPin } from '@tabler/icons-react';
+import { useState } from 'react';
 
 interface Props {
     equipment: Equipment;
     inputs: BaseFormConfig[];
+    requestMaintenance: (id: string, data: MaintenanceRequestData) => void;
     removeEquipment: (id: string) => void;
     editEquipment: (id: string, data: Equipment) => void;
 }
@@ -24,9 +19,23 @@ interface Props {
 export function EquipmentCard({
     equipment,
     inputs,
+    requestMaintenance,
     removeEquipment,
     editEquipment,
 }: Props) {
+    const [equipmentToRepair, setEquipmentToRepair] =
+        useState<Equipment | null>(null);
+
+    const handleMaintenanceFormOpen = () => {
+        setEquipmentToRepair(equipment);
+    };
+
+    const handleMaintenanceFormSubmit = (data: MaintenanceRequestData) => {
+        if (equipmentToRepair === null) return;
+
+        requestMaintenance(equipmentToRepair.id, data);
+    };
+
     const statusColors: Record<string, string> = {
         OPERATIONAL: 'teal',
         MAINTENANCE_REQUIRED: 'orange',
@@ -88,10 +97,24 @@ export function EquipmentCard({
                 <ActionMenu
                     currentObject={equipment}
                     inputs={inputs}
-                    actions={getEquipmentActions(removeEquipment)}
+                    actions={getEquipmentActions(
+                        removeEquipment,
+                        handleMaintenanceFormOpen,
+                        equipment.status,
+                    )}
                     editObject={editEquipment}
                 />
             </Group>
+
+            {equipmentToRepair && (
+                <ActionForm
+                    inputs={maintenanceInputs}
+                    title='Request an equipment maintenance'
+                    onSubmit={handleMaintenanceFormSubmit}
+                    onClose={() => setEquipmentToRepair(null)}
+                    isOpened={!!equipmentToRepair}
+                />
+            )}
         </Card>
     );
 }

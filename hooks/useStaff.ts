@@ -30,6 +30,7 @@ export const useStaff = () => {
             name,
             callbackURL: '/staff',
             fetchOptions: {
+                disableAutoSignIn: true,
                 body: {
                     role: role,
                 },
@@ -41,8 +42,7 @@ export const useStaff = () => {
             throw new Error(error.message);
         }
 
-        console.log('Staff created successfully:', session);
-        await fetchStaff(); // Refresh the list
+        await fetchStaff();
     };
 
     const editStaff = async (id: string, data: StaffMember) => {

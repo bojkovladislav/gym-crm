@@ -13,6 +13,8 @@ import { useEffect, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
 import { Notification } from '@/components/Notification';
+import { Role } from '@/config/nav-tabs';
+import { UserRole } from '@/app/generated/prisma/enums';
 
 type Inputs = {
     email: string;
