@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import {
     createEquipmentAction,
     deleteEquipmentAction,
@@ -54,9 +53,12 @@ export const useEquipment = () => {
                 data.category,
                 data.serialNumber || '',
                 data.location || '',
+                data.status,
             );
 
             if (!result.success) throw new Error(result.error);
+
+            fetchEquipment({});
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
@@ -73,6 +75,8 @@ export const useEquipment = () => {
 
             if (!result.success) throw new Error(result.error);
 
+            fetchEquipment({});
+
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error('Edit failed:', error.message);
@@ -86,6 +90,8 @@ export const useEquipment = () => {
         try {
             setLoading(true);
             await deleteEquipmentAction(id);
+
+            fetchEquipment({});
         } catch (error) {
             console.error('Delete failed:', error);
         } finally {

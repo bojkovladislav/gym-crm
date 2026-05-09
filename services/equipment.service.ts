@@ -80,14 +80,15 @@ export async function createEquipment(
     category: string,
     serialNumber?: string,
     location?: string,
+    status?: EquipmentStatus,
 ) {
     const newEquipment = await prisma.equipment.create({
         data: {
-            name: name,
-            category: category,
+            name,
+            category,
             serialNumber: serialNumber || null,
             location: location || null,
-            status: 'OPERATIONAL' as EquipmentStatus,
+            status: status || ('OPERATIONAL' as EquipmentStatus),
         },
     });
 

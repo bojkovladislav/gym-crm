@@ -1,3 +1,4 @@
+import { EquipmentStatus } from '@/app/generated/prisma/enums';
 import { Equipment } from '@/features/EquipmentLog/EquipmentLog';
 import {
     getEquipmentStats,
@@ -36,6 +37,7 @@ export async function createEquipmentAction(
     category: string,
     serialNumber?: string,
     location?: string,
+    status?: EquipmentStatus,
 ) {
     try {
         const result = await createEquipment(
@@ -43,6 +45,7 @@ export async function createEquipmentAction(
             category,
             serialNumber,
             location,
+            status,
         );
 
         return {

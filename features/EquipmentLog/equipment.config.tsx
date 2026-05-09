@@ -1,6 +1,7 @@
 import { BaseFormConfig } from '@/components/ActionForm/ActionForm';
 import { Role } from '@/config/nav-tabs';
 import {
+    IconActivity,
     IconBarbell,
     IconCategory,
     IconEdit,
@@ -12,7 +13,6 @@ import {
     IconTrash,
 } from '@tabler/icons-react';
 import { Action } from '../ActionMenu/ActionMenu';
-import { Equipment } from './EquipmentLog';
 
 export const equipmentInputs: BaseFormConfig[] = [
     {
@@ -36,6 +36,18 @@ export const equipmentInputs: BaseFormConfig[] = [
             { value: 'RECOVERY', label: 'Recovery/Massage' },
         ],
         rules: { required: 'Please select a category' },
+    },
+    {
+        name: 'status',
+        label: 'Current Status',
+        inputType: 'select',
+        placeholder: 'Set equipment status',
+        icon: <IconActivity size={18} />,
+        data: [
+            { value: 'OPERATIONAL', label: 'Operational' },
+            { value: 'MAINTENANCE_REQUIRED', label: 'Maintenance Required' },
+            { value: 'OUT_OF_ORDER', label: 'Out of Order' },
+        ],
     },
     {
         name: 'serialNumber',
