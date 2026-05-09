@@ -134,6 +134,8 @@ model Equipment {
   lastServiced      DateTime?
   location          String?          
   maintenanceLogs   MaintenanceLog[]
+  events            Event[]
+  transactions      Transaction[]
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
 }
@@ -145,4 +147,37 @@ model MaintenanceLog {
   serviceDate  DateTime  @default(now())
   equipmentId  String
   equipment    Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+}
+
+enum EventType {
+  MAINTENANCE
+  TRAINER_SESSION
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String    
+  type        EventType
+  start       DateTime
+  end         DateTime
+  amount      Float     
+  equipmentId String?  
+  equipment   Equipment? @relation(fields: [equipmentId], references: [id])
+  isCompleted Boolean   @default(false)
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  amount      Float
+  type        TransactionType
+  category    String          
+  description String
+  createdAt   DateTime        @default(now())
+  equipmentId String?        
+  equipment   Equipment?      @relation(fields: [equipmentId], references: [id])
 }
