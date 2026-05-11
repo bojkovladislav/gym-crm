@@ -143,7 +143,6 @@ model Equipment {
   location          String?          
   maintenanceLogs   MaintenanceLog[]
   events            Event[]
-  transactions      Transaction[]
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
 }
@@ -172,6 +171,7 @@ model Event {
   equipmentId String?  
   equipment   Equipment? @relation(fields: [equipmentId], references: [id])
   isCompleted Boolean   @default(false)
+  transactions Transaction[]
 }
 
 enum TransactionType {
@@ -186,6 +186,6 @@ model Transaction {
   category    String          
   description String
   createdAt   DateTime        @default(now())
-  equipmentId String?        
-  equipment   Equipment?      @relation(fields: [equipmentId], references: [id])
+  eventId     String?        
+  event       Event?      @relation(fields: [eventId], references: [id])
 }

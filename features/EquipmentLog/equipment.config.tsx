@@ -134,7 +134,7 @@ export const maintenanceInputs: BaseFormConfig[] = [
         },
     },
     {
-        name: 'amount',
+        name: 'cost',
         label: 'Estimated Cost',
         inputType: 'number',
         placeholder: '0.00',

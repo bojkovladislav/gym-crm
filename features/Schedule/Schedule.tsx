@@ -6,7 +6,8 @@ import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { EventType } from '@/app/generated/prisma/enums';
 import { useEffect, useState } from 'react';
-import { getEventsAction } from '@/actions/event.action';
+import { completeEventAction, getEventsAction } from '@/actions/event.action';
+import EventMenu from './EventMenu';
 
 export interface Event {
     id: string;
@@ -26,19 +27,46 @@ export interface Event {
 export default function Schedule() {
     const [events, setEvents] = useState<Event[]>([]);
 
-    useEffect(() => {
-        async function fetchEvents() {
-            try {
-                const events = await getEventsAction();
+    const getBackgroundColor = (eventType: EventType, isCompleted: boolean) => {
+        let color;
 
-                if (events.data && events.success) {
-                    setEvents(events.data);
-                }
-            } catch (error) {
-                console.error('Failed to get events.');
-            }
+        if (eventType === 'MAINTENANCE') {
+            color = '#fa5252';
+        } else if (eventType === 'TRAINER_SESSION') {
+            color = '#228be6';
         }
 
+        if (isCompleted) {
+            color = 'green';
+        }
+
+        return color;
+    };
+
+    async function fetchEvents() {
+        try {
+            const events = await getEventsAction();
+
+            if (events.data && events.success) {
+                setEvents(events.data);
+            }
+        } catch (error) {
+            console.error('Failed to get events.');
+        }
+    }
+
+    const handleCompleteEvent = async (eventId: string) => {
+        const { success, data, error } = await completeEventAction(eventId);
+
+        console.log(success, data, error);
+
+        if (success) {
+            await fetchEvents();
+        }
+    };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchEvents();
     }, []);
 
@@ -56,12 +84,21 @@ export default function Schedule() {
                 title: event.title,
                 start: event.start,
                 end: event.end,
-                backgroundColor:
-                    event.type === 'MAINTENANCE' ? '#fa5252' : '#228be6',
+                backgroundColor: getBackgroundColor(
+                    event.type,
+                    event.isCompleted,
+                ),
                 extendedProps: { ...event },
             }))}
-            eventClick={(info) => {
-                console.log('Event clicked:', info.event.extendedProps);
+            eventContent={(eventInfo) => {
+                const data = eventInfo.event.extendedProps as Event;
+
+                return (
+                    <EventMenu
+                        event={data}
+                        handleCompleteEvent={handleCompleteEvent}
+                    />
+                );
             }}
             height='90vh'
         />
