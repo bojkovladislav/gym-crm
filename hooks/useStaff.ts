@@ -4,6 +4,7 @@ import { StaffMember } from '@/features/Staff/Staff';
 import { updateUser } from '@/actions/user.action';
 import { deleteUser } from '@/services/user.service';
 import { authClient } from '@/lib/auth-client';
+import { createStaffMember } from '@/actions/staff.action';
 
 export const useStaff = () => {
     const [staff, setStaff] = useState<StaffMember[]>([]);
@@ -22,27 +23,8 @@ export const useStaff = () => {
     };
 
     const addNewStaff = async (data: StaffMember) => {
-        const { email, password, name, role } = data;
-
-        const { data: session, error } = await authClient.signUp.email({
-            email,
-            password,
-            name,
-            callbackURL: '/staff',
-            fetchOptions: {
-                body: {
-                    role: role,
-                },
-            },
-        });
-
-        if (error) {
-            console.error('Signup failed:', error.message);
-            throw new Error(error.message);
-        }
-
-        console.log('Staff created successfully:', session);
-        await fetchStaff(); // Refresh the list
+        await createStaffMember(data);
+        await fetchStaff();
     };
 
     const editStaff = async (id: string, data: StaffMember) => {
