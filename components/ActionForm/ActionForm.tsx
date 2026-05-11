@@ -4,6 +4,7 @@ import {
     ActionIcon,
     Box,
     Button,
+    Checkbox,
     Drawer,
     Group,
     NumberInput,
@@ -129,7 +130,9 @@ export default function ActionForm<T extends FieldValues>({
                                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                         error: (errors as any)[input.name]
                                             ?.message,
-                                        withAsterisk: !!input.rules,
+                                        ...(input.inputType !== 'checkbox' && {
+                                            withAsterisk: !!input.rules,
+                                        }),
                                         leftSection: input.icon,
                                     };
 
@@ -172,6 +175,21 @@ export default function ActionForm<T extends FieldValues>({
                                                 <TimeInput
                                                     {...commonProps}
                                                     leftSection={input.icon}
+                                                />
+                                            );
+                                        case 'checkbox':
+                                            return (
+                                                <Checkbox
+                                                    {...commonProps}
+                                                    {...field}
+                                                    checked={field.value}
+                                                    onChange={(event) =>
+                                                        field.onChange(
+                                                            event.currentTarget
+                                                                .checked,
+                                                        )
+                                                    }
+                                                    label={input.label}
                                                 />
                                             );
                                         case 'number':

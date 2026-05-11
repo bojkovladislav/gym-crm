@@ -76,6 +76,11 @@ export const getPersonFields = (plans: any[]): BaseFormConfig[] => [
         data: plans,
         rules: { required: 'Required' },
     },
+    {
+        name: 'autoRenew',
+        label: 'Enable Auto-Renewal',
+        inputType: 'checkbox',
+    },
 ];
 
 export const getPersonActions = (onDelete: (id: string) => void): Action[] => [

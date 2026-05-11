@@ -1,10 +1,11 @@
+import { keyFobIdGenerator } from '@/helpers/keyFobIdGenerator';
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { name, email, phoneNumber, planId, keyFobId, dob } = body;
+        const { name, email, phoneNumber, planId, dob } = body;
 
         if (!name || !email) {
             return NextResponse.json(
@@ -30,11 +31,15 @@ export async function POST(request: Request) {
                     phoneNumber,
                     planId,
                     dob: dob ? new Date(dob) : null,
-                    status: 'INACTIVE',
+                    status: 'PENDING_ACTIVATION',
                     visits: 0,
                     joinedAt: new Date(),
-                    keyFobId,
                 },
+            });
+
+            const updatedMember = await tx.member.update({
+                where: { id: member.id },
+                data: { keyFobId: keyFobIdGenerator(name, dob, member.id) },
             });
 
             await tx.transaction.create({
@@ -47,7 +52,7 @@ export async function POST(request: Request) {
                 },
             });
 
-            return member;
+            return updatedMember;
         });
 
         return NextResponse.json(newMember, { status: 201 });

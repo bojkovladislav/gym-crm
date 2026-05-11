@@ -1,4 +1,8 @@
-export function keyFobIdGenerator(name: string, dob: string): string {
+export function keyFobIdGenerator(
+    name: string,
+    dob: string,
+    memberId: string,
+): string {
     const nameParts = name.trim().split(/\s+/);
     const initials = nameParts
         .map((part) => part.charAt(0).toUpperCase())
@@ -11,10 +15,5 @@ export function keyFobIdGenerator(name: string, dob: string): string {
     const year = dateObj.getFullYear();
     const dateString = `${month}${day}${year}`;
 
-    const randomString = Math.random()
-        .toString(36)
-        .substring(2, 6)
-        .toUpperCase();
-
-    return `FOB-${initials}-${dateString}-${randomString}`;
+    return `FOB-${initials}-${dateString}-${memberId}`;
 }
