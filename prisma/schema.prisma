@@ -120,20 +120,29 @@ model Plan {
 enum EquipmentStatus {
   OPERATIONAL
   MAINTENANCE_REQUIRED
+  UNDER_MAINTENANCE
   OUT_OF_ORDER
   DECOMMISSIONED
+}
+
+enum EquipmentCategory {
+  CARDIO
+  STRENGTH
+  FREE_WEIGHTS
+  RECOVERY
 }
 
 model Equipment {
   id                String           @id @default(cuid())
   name              String
-  category          String           
+  category          EquipmentCategory           
   serialNumber      String?          @unique
   status            EquipmentStatus  @default(OPERATIONAL)
   purchaseDate      DateTime?
   lastServiced      DateTime?
   location          String?          
   maintenanceLogs   MaintenanceLog[]
+  events            Event[]
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
 }
@@ -145,4 +154,38 @@ model MaintenanceLog {
   serviceDate  DateTime  @default(now())
   equipmentId  String
   equipment    Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+}
+
+enum EventType {
+  MAINTENANCE
+  TRAINER_SESSION
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String    
+  type        EventType
+  start       DateTime
+  end         DateTime
+  amount      Float     
+  equipmentId String?  
+  equipment   Equipment? @relation(fields: [equipmentId], references: [id])
+  isCompleted Boolean   @default(false)
+  transactions Transaction[]
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  amount      Float
+  type        TransactionType
+  category    String          
+  description String
+  createdAt   DateTime        @default(now())
+  eventId     String?        
+  event       Event?      @relation(fields: [eventId], references: [id])
 }

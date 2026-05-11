@@ -5,31 +5,19 @@ import {
     editEquipmentAction,
     getEquipmentAction,
     getEquipmentStatsAction,
+    requestMaintenanceAction,
 } from '@/actions/equipment.action';
-import { Equipment } from '@/features/EquipmentLog/EquipmentLog';
+import {
+    Equipment,
+    MaintenanceRequestData,
+} from '@/features/EquipmentLog/EquipmentLog';
 import { EquipmentStatsData } from '@/features/EquipmentLog/EquipmentStats';
+import { EquipmentCategory } from '@/app/generated/prisma/enums';
 
 export const useEquipment = () => {
     const [equipment, setEquipment] = useState<Equipment[]>([]);
     const [stats, setStats] = useState<EquipmentStatsData | null>(null);
     const [loading, setLoading] = useState(false);
-
-    const fetchEquipment = async (filters: {
-        search?: string;
-        category?: string;
-        status?: string;
-    }) => {
-        try {
-            setLoading(true);
-            const response = await getEquipmentAction(filters);
-
-            setEquipment(response.data ?? []);
-        } catch (error) {
-            console.error('Failed to fetch equipment:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const fetchEquipmentStats = async () => {
         try {
@@ -40,6 +28,24 @@ export const useEquipment = () => {
             }
         } catch (error) {
             console.error('Failed to fetch equipment:', error);
+        }
+    };
+
+    const fetchEquipment = async (filters: {
+        search?: string;
+        category?: EquipmentCategory;
+        status?: string;
+    }) => {
+        try {
+            setLoading(true);
+            const response = await getEquipmentAction(filters);
+
+            setEquipment(response.data ?? []);
+            fetchEquipmentStats();
+        } catch (error) {
+            console.error('Failed to fetch equipment:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -86,6 +92,23 @@ export const useEquipment = () => {
         }
     };
 
+    const requestMaintenance = async (
+        id: string,
+        data: MaintenanceRequestData,
+    ) => {
+        try {
+            const result = await requestMaintenanceAction(id, data);
+
+            if (!result.success) throw new Error(result.error);
+
+            await fetchEquipment({});
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.error('Maintenance request failed:', error.message);
+            throw error;
+        }
+    };
+
     const removeEquipment = async (id: string) => {
         try {
             setLoading(true);
@@ -109,6 +132,7 @@ export const useEquipment = () => {
         loading,
         addNewEquipment,
         editEquipment,
+        requestMaintenance,
         removeEquipment,
         fetchEquipment,
     };

@@ -41,3 +41,38 @@ a,
 li {
     color: var(--color-foreground);
 }
+
+.fc .fc-button-primary {
+    background-color: var(--mantine-color-blue-6);
+    border-color: var(--mantine-color-blue-6);
+    text-transform: capitalize;
+    font-weight: 500;
+    transition: background-color 150ms ease;
+}
+
+.fc .fc-button-primary:hover {
+    background-color: var(--mantine-color-blue-7);
+    border-color: var(--mantine-color-blue-7);
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+    background-color: var(--mantine-color-blue-8);
+    border-color: var(--mantine-color-blue-8);
+    box-shadow: none !important;
+}
+
+.fc .fc-today-button {
+    background-color: var(--mantine-color-gray-2) !important;
+    border-color: var(--mantine-color-gray-3) !important;
+    color: var(--mantine-color-black) !important;
+}
+
+.fc .fc-today-button:disabled {
+    opacity: 0.5;
+    background-color: var(--mantine-color-gray-1) !important;
+}
+
+.fc .fc-button:focus {
+    box-shadow: none !important;
+}

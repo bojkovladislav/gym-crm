@@ -1,18 +1,20 @@
 'use client';
 
 import {
+    ActionIcon,
     Box,
     Button,
     Drawer,
     Group,
+    NumberInput,
     PasswordInput,
     Select,
     Stack,
     TextInput,
 } from '@mantine/core';
-import { DateInput } from '@mantine/dates';
+import { DateInput, TimeInput } from '@mantine/dates';
 import { useDisclosure } from '@mantine/hooks';
-import { IconDeviceFloppy, IconX } from '@tabler/icons-react';
+import { IconClock, IconDeviceFloppy, IconX } from '@tabler/icons-react';
 import { ReactNode, useEffect } from 'react';
 import {
     Controller,
@@ -22,13 +24,21 @@ import {
     useForm,
 } from 'react-hook-form';
 
-export type InputType = 'text' | 'select' | 'checkbox' | 'date' | 'password';
+export type InputType =
+    | 'text'
+    | 'select'
+    | 'checkbox'
+    | 'date'
+    | 'password'
+    | 'number'
+    | 'time';
 
 export interface BaseFormConfig {
     name: string;
     label: string;
     inputType: InputType;
     placeholder?: string;
+    minDate?: Date;
     icon?: ReactNode;
     rules?: object;
     data?: { value: string; label: string }[];
@@ -61,6 +71,8 @@ export default function ActionForm<T extends FieldValues>({
         return acc;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }, {} as any) as T;
+
+    console.log(defaultValues);
 
     const {
         control,
@@ -142,6 +154,7 @@ export default function ActionForm<T extends FieldValues>({
                                                     onChange={(val) =>
                                                         field.onChange(val)
                                                     }
+                                                    minDate={input.minDate}
                                                 />
                                             );
                                         case 'select':
@@ -152,6 +165,28 @@ export default function ActionForm<T extends FieldValues>({
                                                     onDropdownOpen={
                                                         input.onDropdownOpen
                                                     }
+                                                />
+                                            );
+                                        case 'time':
+                                            return (
+                                                <TimeInput
+                                                    {...commonProps}
+                                                    leftSection={input.icon}
+                                                />
+                                            );
+                                        case 'number':
+                                            return (
+                                                <NumberInput
+                                                    {...commonProps}
+                                                    placeholder={
+                                                        input.placeholder
+                                                    }
+                                                    hideControls
+                                                    decimalScale={2}
+                                                    fixedDecimalScale
+                                                    min={0}
+                                                    prefix='$'
+                                                    thousandSeparator=','
                                                 />
                                             );
                                         case 'password':

@@ -1,11 +1,18 @@
-import { EquipmentStatus } from '@/app/generated/prisma/enums';
-import { Equipment } from '@/features/EquipmentLog/EquipmentLog';
+import {
+    EquipmentCategory,
+    EquipmentStatus,
+} from '@/app/generated/prisma/enums';
+import {
+    Equipment,
+    MaintenanceRequestData,
+} from '@/features/EquipmentLog/EquipmentLog';
 import {
     getEquipmentStats,
     getFilteredEquipment,
     createEquipment,
     editEquipment,
     deleteEquipment,
+    requestMaintenance,
 } from '@/services/equipment.service';
 
 export async function getEquipmentStatsAction() {
@@ -20,7 +27,7 @@ export async function getEquipmentStatsAction() {
 
 export async function getEquipmentAction(filters: {
     search?: string;
-    category?: string;
+    category?: EquipmentCategory;
     status?: string;
 }) {
     try {
@@ -34,7 +41,7 @@ export async function getEquipmentAction(filters: {
 
 export async function createEquipmentAction(
     name: string,
-    category: string,
+    category: EquipmentCategory,
     serialNumber?: string,
     location?: string,
     status?: EquipmentStatus,
@@ -67,6 +74,19 @@ export async function editEquipmentAction(id: string, data: Equipment) {
         return { success: true, data: updatedEquipment };
     } catch (error) {
         return { success: false, error: 'Failed to edit equipment.' };
+    }
+}
+
+export async function requestMaintenanceAction(
+    id: string,
+    data: MaintenanceRequestData,
+) {
+    try {
+        const result = await requestMaintenance(id, data);
+
+        return { success: true, data: result };
+    } catch (error) {
+        return { success: false, error: 'Failed to request maintenance.' };
     }
 }
 

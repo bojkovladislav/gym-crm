@@ -1,7 +1,15 @@
 'use server';
 
-import { EquipmentStatus } from '@/app/generated/prisma/enums';
-import { Equipment } from '@/features/EquipmentLog/EquipmentLog';
+import {
+    EquipmentCategory,
+    EquipmentStatus,
+    EventType,
+} from '@/app/generated/prisma/enums';
+import {
+    Equipment,
+    MaintenanceRequestData,
+} from '@/features/EquipmentLog/EquipmentLog';
+import { mergeDateAndTime } from '@/helpers/mergeTimeAndDate';
 import prisma from '@/lib/prisma';
 
 export async function getEquipmentStats() {
@@ -39,7 +47,7 @@ export async function getEquipmentStats() {
 
 export async function getFilteredEquipment(filters: {
     search?: string;
-    category?: string;
+    category?: EquipmentCategory;
     status?: string;
 }) {
     return await prisma.equipment.findMany({
@@ -77,7 +85,7 @@ export async function getFilteredEquipment(filters: {
 
 export async function createEquipment(
     name: string,
-    category: string,
+    category: EquipmentCategory,
     serialNumber?: string,
     location?: string,
     status?: EquipmentStatus,
@@ -106,6 +114,43 @@ export async function editEquipment(id: string, data: Equipment) {
     });
 
     return updatedEquipment;
+}
+
+export async function requestMaintenance(
+    id: string,
+    data: MaintenanceRequestData,
+) {
+    const { requestTitle, date, cost, startTime, finishTime } = data;
+
+    const numericAmount = parseFloat(cost as unknown as string) || 0;
+
+    const baseDate = new Date(date);
+
+    const start = mergeDateAndTime(baseDate, startTime);
+    const end = mergeDateAndTime(baseDate, finishTime);
+
+    return await prisma.$transaction(async (tx) => {
+        const event = await tx.event.create({
+            data: {
+                title: requestTitle || 'Maintenance',
+                type: EventType.MAINTENANCE,
+                start,
+                end,
+                equipmentId: id,
+                amount: numericAmount,
+                isCompleted: false,
+            },
+        });
+
+        const updatedEquipment = await prisma.equipment.update({
+            where: { id },
+            data: {
+                status: 'UNDER_MAINTENANCE',
+            },
+        });
+
+        return { event, updatedEquipment };
+    });
 }
 
 export async function deleteEquipment(id: string) {
