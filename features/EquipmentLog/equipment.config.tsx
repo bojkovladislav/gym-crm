@@ -5,6 +5,8 @@ import {
     IconBarbell,
     IconCalendarEvent,
     IconCategory,
+    IconClockPlay,
+    IconClockStop,
     IconCurrencyDollar,
     IconEdit,
     IconHammer,
@@ -109,6 +111,26 @@ export const maintenanceInputs: BaseFormConfig[] = [
         icon: <IconCalendarEvent size={18} />,
         rules: {
             required: 'A repair date is required',
+        },
+    },
+    {
+        name: 'startTime',
+        label: 'Start Time',
+        inputType: 'time',
+        placeholder: 'Pick start time',
+        icon: <IconClockPlay size={18} />,
+        rules: {
+            required: 'Start time is required',
+        },
+    },
+    {
+        name: 'finishTime',
+        label: 'Finish Time',
+        inputType: 'time',
+        placeholder: 'Pick finish time',
+        icon: <IconClockStop size={18} />,
+        rules: {
+            required: 'Finish time is required',
         },
     },
     {

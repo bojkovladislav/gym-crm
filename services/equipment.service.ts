@@ -9,6 +9,7 @@ import {
     Equipment,
     MaintenanceRequestData,
 } from '@/features/EquipmentLog/EquipmentLog';
+import { mergeDateAndTime } from '@/helpers/mergeTimeAndDate';
 import prisma from '@/lib/prisma';
 
 export async function getEquipmentStats() {
@@ -119,15 +120,14 @@ export async function requestMaintenance(
     id: string,
     data: MaintenanceRequestData,
 ) {
-    const { requestTitle, date, cost } = data;
+    const { requestTitle, date, cost, startTime, finishTime } = data;
 
     const numericAmount = parseFloat(cost as unknown as string) || 0;
 
-    const start = new Date(date);
-    start.setHours(0, 0, 0, 0);
+    const baseDate = new Date(date);
 
-    const end = new Date(date);
-    end.setHours(23, 59, 59, 999);
+    const start = mergeDateAndTime(baseDate, startTime);
+    const end = mergeDateAndTime(baseDate, finishTime);
 
     return await prisma.$transaction(async (tx) => {
         const event = await tx.event.create({

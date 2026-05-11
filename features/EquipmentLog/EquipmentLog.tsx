@@ -32,6 +32,8 @@ export interface Equipment {
 export interface MaintenanceRequestData {
     requestTitle: string;
     date: string;
+    startTime: string;
+    finishTime: string;
     cost: number;
 }
 

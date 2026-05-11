@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    ActionIcon,
     Box,
     Button,
     Drawer,
@@ -11,9 +12,9 @@ import {
     Stack,
     TextInput,
 } from '@mantine/core';
-import { DateInput } from '@mantine/dates';
+import { DateInput, TimeInput } from '@mantine/dates';
 import { useDisclosure } from '@mantine/hooks';
-import { IconDeviceFloppy, IconX } from '@tabler/icons-react';
+import { IconClock, IconDeviceFloppy, IconX } from '@tabler/icons-react';
 import { ReactNode, useEffect } from 'react';
 import {
     Controller,
@@ -29,7 +30,8 @@ export type InputType =
     | 'checkbox'
     | 'date'
     | 'password'
-    | 'number';
+    | 'number'
+    | 'time';
 
 export interface BaseFormConfig {
     name: string;
@@ -163,6 +165,13 @@ export default function ActionForm<T extends FieldValues>({
                                                     onDropdownOpen={
                                                         input.onDropdownOpen
                                                     }
+                                                />
+                                            );
+                                        case 'time':
+                                            return (
+                                                <TimeInput
+                                                    {...commonProps}
+                                                    leftSection={input.icon}
                                                 />
                                             );
                                         case 'number':

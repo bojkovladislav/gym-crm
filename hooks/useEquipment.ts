@@ -19,6 +19,18 @@ export const useEquipment = () => {
     const [stats, setStats] = useState<EquipmentStatsData | null>(null);
     const [loading, setLoading] = useState(false);
 
+    const fetchEquipmentStats = async () => {
+        try {
+            const response = await getEquipmentStatsAction();
+
+            if (response.success && response.data) {
+                setStats(response.data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch equipment:', error);
+        }
+    };
+
     const fetchEquipment = async (filters: {
         search?: string;
         category?: EquipmentCategory;
@@ -29,22 +41,11 @@ export const useEquipment = () => {
             const response = await getEquipmentAction(filters);
 
             setEquipment(response.data ?? []);
+            fetchEquipmentStats();
         } catch (error) {
             console.error('Failed to fetch equipment:', error);
         } finally {
             setLoading(false);
-        }
-    };
-
-    const fetchEquipmentStats = async () => {
-        try {
-            const response = await getEquipmentStatsAction();
-
-            if (response.success && response.data) {
-                setStats(response.data);
-            }
-        } catch (error) {
-            console.error('Failed to fetch equipment:', error);
         }
     };
 
