@@ -49,6 +49,7 @@ export const useMembers = () => {
             dob: new Date(data.dob),
             keyFobId: keyFobIdGenerator(data.name, data.dob),
         };
+
         await axios.post('/api/members/', newMember);
         await fetchInitialData();
     };

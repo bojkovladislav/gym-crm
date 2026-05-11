@@ -13,18 +13,41 @@ export async function POST(request: Request) {
             );
         }
 
-        const newMember = await prisma.member.create({
-            data: {
-                name,
-                email,
-                phoneNumber,
-                planId,
-                dob,
-                status: 'INACTIVE',
-                visits: 0,
-                joinedAt: new Date(),
-                keyFobId,
-            },
+        const newMember = await prisma.$transaction(async (tx) => {
+            const currentPlan = await prisma.plan.findUnique({
+                where: { id: planId },
+                select: { name: true, price: true },
+            });
+
+            if (!currentPlan) {
+                throw new Error('Plan not found');
+            }
+
+            const member = await tx.member.create({
+                data: {
+                    name,
+                    email,
+                    phoneNumber,
+                    planId,
+                    dob: dob ? new Date(dob) : null,
+                    status: 'INACTIVE',
+                    visits: 0,
+                    joinedAt: new Date(),
+                    keyFobId,
+                },
+            });
+
+            await tx.transaction.create({
+                data: {
+                    amount: currentPlan.price,
+                    type: 'INCOME',
+                    description: `${currentPlan.name} Subscription - ${member.name}`,
+                    category: 'Subscription',
+                    memberId: member.id,
+                },
+            });
+
+            return member;
         });
 
         return NextResponse.json(newMember, { status: 201 });

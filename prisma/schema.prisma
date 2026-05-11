@@ -102,6 +102,7 @@ model Member {
   keyFobId     String?        @unique
   joinedAt     DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
+  transactions Transaction[]
 
   @@map("members")
 }
@@ -188,4 +189,6 @@ model Transaction {
   createdAt   DateTime        @default(now())
   eventId     String?        
   event       Event?      @relation(fields: [eventId], references: [id])
+  memberId    String?
+  member      Member?     @relation(fields: [memberId], references: [id])
 }
