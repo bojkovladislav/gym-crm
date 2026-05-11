@@ -1,19 +1,8 @@
 'use client';
 
-import {
-    Badge,
-    Divider,
-    Group,
-    Menu,
-    Modal,
-    Stack,
-    Text,
-    ThemeIcon,
-} from '@mantine/core';
+import { Menu, Text } from '@mantine/core';
 import { Event } from './Schedule';
 import {
-    IconCalendar,
-    IconCategory,
     IconCheck,
     IconInfoCircle,
     IconTools,
