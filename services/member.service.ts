@@ -93,4 +93,6 @@ export async function memberCheckIn(keyFobId: string) {
         where: { id: memberId },
         data: { visits: { increment: 1 } },
     });
+
+    return { message: 'You have been successfully authenticated. Welcome In' };
 }

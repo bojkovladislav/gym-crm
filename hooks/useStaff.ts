@@ -3,7 +3,6 @@ import axios from 'axios';
 import { StaffMember } from '@/features/Staff/Staff';
 import { updateUser } from '@/actions/user.action';
 import { deleteUser } from '@/services/user.service';
-import { authClient } from '@/lib/auth-client';
 import { createStaffMember } from '@/actions/staff.action';
 
 export const useStaff = () => {

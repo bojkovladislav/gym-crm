@@ -1,6 +1,10 @@
 'use server';
 
-import { deleteMember, editMember } from '@/services/member.service';
+import {
+    deleteMember,
+    editMember,
+    memberCheckIn,
+} from '@/services/member.service';
 
 export async function updateMember(
     memberId: string,
@@ -27,5 +31,18 @@ export async function removeMember(memberId: string) {
         return { success: true, data: deletedMember };
     } catch (error) {
         return { success: false, error: "Couldn't delete member" };
+    }
+}
+
+export async function memberCheckInAction(keyFobId: string) {
+    try {
+        const data = await memberCheckIn(keyFobId);
+
+        return { success: true, data };
+    } catch (error) {
+        return {
+            success: false,
+            error: "Couldn't initiate member access procedure",
+        };
     }
 }
