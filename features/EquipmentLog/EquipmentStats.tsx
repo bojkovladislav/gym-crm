@@ -1,4 +1,4 @@
-import { Group, Paper, Text, ThemeIcon, SimpleGrid } from '@mantine/core';
+import { StatisticBlocks } from '@/components/StatisticBlocks';
 import {
     IconArmchair,
     IconCheck,
@@ -53,42 +53,5 @@ export function EquipmentStats({ stats }: Props) {
         },
     ];
 
-    return (
-        <SimpleGrid cols={{ base: 1, xs: 2, md: 5 }} mb='xl'>
-            {items.map((item) => {
-                const Icon = item.icon;
-
-                return (
-                    <Paper withBorder p='md' radius='md' key={item.title}>
-                        <Group justify='space-between'>
-                            <div>
-                                <Text
-                                    c='dimmed'
-                                    tt='uppercase'
-                                    fw={700}
-                                    fz='xs'
-                                >
-                                    {item.title}
-                                </Text>
-                                <Text fw={700} fz='xl'>
-                                    {item.value.toLocaleString()}
-                                </Text>
-                            </div>
-                            <ThemeIcon
-                                color='gray'
-                                variant='light'
-                                style={{
-                                    color: `var(--mantine-color-${item.color}-filled)`,
-                                }}
-                                size='xl'
-                                radius='md'
-                            >
-                                <Icon size='1.8rem' stroke={1.5} />
-                            </ThemeIcon>
-                        </Group>
-                    </Paper>
-                );
-            })}
-        </SimpleGrid>
-    );
+    return <StatisticBlocks blocks={items} />;
 }

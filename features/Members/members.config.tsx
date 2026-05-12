@@ -37,6 +37,7 @@ export const getPersonFields = (plans: any[]): BaseFormConfig[] => [
         label: 'Full Name',
         inputType: 'text',
         icon: <IconUser style={{ width: rem(16) }} />,
+        placeholder: 'Enter full name',
         rules: { required: 'Required' },
     },
     {
@@ -44,6 +45,7 @@ export const getPersonFields = (plans: any[]): BaseFormConfig[] => [
         label: 'Date of Birth',
         inputType: 'date',
         icon: <IconCalendar style={{ width: rem(16) }} />,
+        placeholder: 'Select date of birth',
         rules: { required: 'Required' },
     },
     {
@@ -51,6 +53,7 @@ export const getPersonFields = (plans: any[]): BaseFormConfig[] => [
         label: 'Email',
         inputType: 'text',
         icon: <IconMail style={{ width: rem(16) }} />,
+        placeholder: 'example@email.com',
         rules: {
             required: 'Required',
             pattern: { value: /^\S+@\S+$/i, message: 'Invalid' },
@@ -61,6 +64,7 @@ export const getPersonFields = (plans: any[]): BaseFormConfig[] => [
         label: 'Phone Number',
         inputType: 'text',
         icon: <IconPhone style={{ width: rem(16) }} />,
+        placeholder: '+1 (555) 123-4567',
         rules: {
             required: 'Required',
             pattern: {
@@ -73,6 +77,7 @@ export const getPersonFields = (plans: any[]): BaseFormConfig[] => [
         name: 'planId',
         label: 'Plan',
         inputType: 'select',
+        placeholder: 'Select a plan',
         data: plans,
         rules: { required: 'Required' },
     },

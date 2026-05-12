@@ -57,7 +57,7 @@ export const tabs: Tab[] = [
         title: 'Billing/Sales',
         icon: <IconCash size={20} />,
         roles: [Role.ADMIN, Role.OWNER],
-        href: '/billing',
+        href: '/billing-sales',
     },
     {
         title: 'Settings',

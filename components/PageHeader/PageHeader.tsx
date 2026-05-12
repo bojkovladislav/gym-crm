@@ -5,10 +5,10 @@ import { IconUserPlus } from '@tabler/icons-react';
 
 interface Props {
     entityInPlural: string;
-    entityInSingular: string;
+    entityInSingular?: string;
     subTitle: string;
-    formTitle: string;
-    inputs: BaseFormConfig[];
+    formTitle?: string;
+    inputs?: BaseFormConfig[];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSubmit?: (data: any) => void;
 }
@@ -32,7 +32,7 @@ export default function PageHeader({
                 </Text>
             </div>
 
-            {onSubmit && (
+            {onSubmit && formTitle && inputs && (
                 <ActionForm
                     inputs={inputs}
                     onSubmit={onSubmit}

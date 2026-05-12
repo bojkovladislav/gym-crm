@@ -19,6 +19,7 @@ export const getStaffFields = (isEdit: boolean = false): BaseFormConfig[] => {
             label: 'Full Name',
             inputType: 'text',
             icon: <IconUser size={16} />,
+            placeholder: 'Enter full name',
             rules: { required: 'Name is required' },
         },
         {
@@ -26,12 +27,14 @@ export const getStaffFields = (isEdit: boolean = false): BaseFormConfig[] => {
             label: 'Email',
             inputType: 'text',
             icon: <IconMail size={16} />,
+            placeholder: 'example@email.com',
             rules: { required: 'Email is required' },
         },
         {
             name: 'role',
             label: 'Role',
             inputType: 'select',
+            placeholder: 'Select a role',
             data: [
                 { value: 'ADMIN', label: 'Admin' },
                 { value: 'WORKER', label: 'Worker' },
@@ -49,6 +52,7 @@ export const getStaffFields = (isEdit: boolean = false): BaseFormConfig[] => {
                 required: 'Password is required',
                 minLength: { value: 8, message: 'At least 8 characters' },
             },
+            placeholder: 'Enter password',
         });
     }
 
