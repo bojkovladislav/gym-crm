@@ -6,7 +6,7 @@ import prisma from '@/lib/prisma';
 
 export async function createStaffMember(data: StaffMember) {
     try {
-        const { email, password, name, role } = data;
+        const { email, password, name, role, baseSalary } = data;
 
         const user = await auth.api.signUpEmail({
             body: {
@@ -22,7 +22,7 @@ export async function createStaffMember(data: StaffMember) {
 
         await prisma.user.update({
             where: { email: email },
-            data: { role: role },
+            data: { role, baseSalary },
         });
 
         return { success: true, data: user };

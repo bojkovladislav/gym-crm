@@ -1,6 +1,11 @@
 'use server';
 
-import { completeEvent, getEvents } from '@/services/event.service';
+import { AppointmentFormValues } from '@/features/MyClients/CreateAppointmentModal';
+import {
+    completeEvent,
+    createAppointmentEvent,
+    getEvents,
+} from '@/services/event.service';
 
 export async function getEventsAction() {
     try {
@@ -19,5 +24,23 @@ export async function completeEventAction(eventId: string) {
         return { success: true, data };
     } catch (error) {
         return { success: false, error: 'Failed to get complete event.' };
+    }
+}
+
+export async function createAppointmentEventAction(
+    trainerId: string,
+    memberId: string,
+    data: AppointmentFormValues,
+) {
+    try {
+        const newEvent = await createAppointmentEvent(
+            trainerId,
+            memberId,
+            data,
+        );
+
+        return { success: true, data: newEvent };
+    } catch (error) {
+        return { success: false, error: 'Failed to create an appointment.' };
     }
 }

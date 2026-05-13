@@ -36,7 +36,7 @@ export const tabs: Tab[] = [
         href: '/members',
     },
     {
-        title: 'My clients',
+        title: 'My Clients',
         icon: <IconUserCheck size={20} />,
         roles: [UserRole.TRAINER],
         href: '/my-clients',

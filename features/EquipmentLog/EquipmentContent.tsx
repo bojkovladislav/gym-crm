@@ -6,6 +6,7 @@ import { BaseFormConfig } from '@/components/ActionForm/ActionForm';
 
 interface Props {
     equipment: Equipment[];
+    readOnly: boolean;
     inputs: BaseFormConfig[];
     removeEquipment: (id: string) => void;
     requestMaintenance: (id: string, data: MaintenanceRequestData) => void;
@@ -16,6 +17,7 @@ export default function EquipmentContent({
     equipment,
     removeEquipment,
     requestMaintenance,
+    readOnly,
     editEquipment,
     inputs,
 }: Props) {
@@ -41,6 +43,7 @@ export default function EquipmentContent({
         >
             {equipment.map((item) => (
                 <EquipmentCard
+                    readOnly={readOnly}
                     key={item.id}
                     equipment={item}
                     editEquipment={editEquipment}

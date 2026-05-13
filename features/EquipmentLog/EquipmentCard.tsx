@@ -10,6 +10,7 @@ import { useState } from 'react';
 
 interface Props {
     equipment: Equipment;
+    readOnly: boolean;
     inputs: BaseFormConfig[];
     requestMaintenance: (id: string, data: MaintenanceRequestData) => void;
     removeEquipment: (id: string) => void;
@@ -18,6 +19,7 @@ interface Props {
 
 export function EquipmentCard({
     equipment,
+    readOnly,
     inputs,
     requestMaintenance,
     removeEquipment,
@@ -93,18 +95,20 @@ export function EquipmentCard({
                 </Group>
             </Stack>
 
-            <Group justify='flex-end' mt='lg'>
-                <ActionMenu
-                    currentObject={equipment}
-                    inputs={inputs}
-                    actions={getEquipmentActions(
-                        removeEquipment,
-                        handleMaintenanceFormOpen,
-                        equipment.status,
-                    )}
-                    editObject={editEquipment}
-                />
-            </Group>
+            {!readOnly && (
+                <Group justify='flex-end' mt='lg'>
+                    <ActionMenu
+                        currentObject={equipment}
+                        inputs={inputs}
+                        actions={getEquipmentActions(
+                            removeEquipment,
+                            handleMaintenanceFormOpen,
+                            equipment.status,
+                        )}
+                        editObject={editEquipment}
+                    />
+                </Group>
+            )}
 
             {equipmentToRepair && (
                 <ActionForm

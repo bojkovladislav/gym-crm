@@ -13,32 +13,40 @@ import DetailedViewAction from './DetailedViewAction';
 
 interface Props {
     event: Event;
+    readOnly: boolean;
     handleCompleteEvent: (eventId: string) => void;
 }
 
-export default function EventActions({ event, handleCompleteEvent }: Props) {
+export default function EventActions({
+    event,
+    handleCompleteEvent,
+    readOnly,
+}: Props) {
     const [opened, { open, close }] = useDisclosure(false);
 
     return (
         <>
             <Menu.Dropdown>
-                <Menu.Label>Event Actions</Menu.Label>
-
-                {!event.isCompleted ? (
-                    <Menu.Item
-                        color='green'
-                        leftSection={<IconCheck size={16} />}
-                        onClick={() => handleCompleteEvent(event.id)}
-                    >
-                        Mark as Completed
-                    </Menu.Item>
-                ) : (
-                    <Menu.Item
-                        disabled
-                        leftSection={<IconInfoCircle size={16} />}
-                    >
-                        Already Processed
-                    </Menu.Item>
+                {!readOnly && (
+                    <>
+                        <Menu.Label>Event Actions</Menu.Label>
+                        {!event.isCompleted ? (
+                            <Menu.Item
+                                color='green'
+                                leftSection={<IconCheck size={16} />}
+                                onClick={() => handleCompleteEvent(event.id)}
+                            >
+                                Mark as Completed
+                            </Menu.Item>
+                        ) : (
+                            <Menu.Item
+                                disabled
+                                leftSection={<IconInfoCircle size={16} />}
+                            >
+                                Already Processed
+                            </Menu.Item>
+                        )}
+                    </>
                 )}
 
                 <Menu.Divider />
@@ -66,18 +74,12 @@ export default function EventActions({ event, handleCompleteEvent }: Props) {
                     Amount: ${event.amount}
                 </Menu.Item>
 
-                {event.equipment && (
-                    <>
-                        <Menu.Divider />
-                        <Menu.Label>Asset Management</Menu.Label>
-                        <Menu.Item
-                            leftSection={<IconInfoCircle size={16} />}
-                            onClick={open}
-                        >
-                            View detailed information
-                        </Menu.Item>
-                    </>
-                )}
+                <Menu.Item
+                    leftSection={<IconInfoCircle size={16} />}
+                    onClick={open}
+                >
+                    View detailed information
+                </Menu.Item>
             </Menu.Dropdown>
 
             <DetailedViewAction event={event} opened={opened} close={close} />

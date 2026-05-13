@@ -41,7 +41,9 @@ export default function LayoutShell({ children, userRole }: Props) {
             <AppShell.Navbar p='md'>
                 <Stack>
                     {tabs
-                        .filter((tab) => tab.roles.includes(UserRole.OWNER)) // TODO use userRole!
+                        .filter((tab) =>
+                            tab.roles.includes(userRole as UserRole),
+                        ) // TODO use userRole!
                         .map(({ title, icon, href }) => (
                             <Tab
                                 key={title}

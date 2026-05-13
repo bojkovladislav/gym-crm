@@ -7,6 +7,7 @@ import {
     IconTrash,
     IconPhone,
     IconAdjustmentsAlt,
+    IconUserCheck,
 } from '@tabler/icons-react';
 import { rem } from '@mantine/core';
 import { BaseFormConfig } from '../../components/ActionForm/ActionForm';
@@ -31,8 +32,11 @@ export const fieldsToShow: (keyof Member | 'plan')[] = [
     'joinedAt',
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getPersonFields = (plans: any[]): BaseFormConfig[] => [
+export const getPersonFields = (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    plans: any[],
+    trainersList: { value: string; label: string }[],
+): BaseFormConfig[] => [
     {
         name: 'name',
         label: 'Full Name',
@@ -73,6 +77,15 @@ export const getPersonFields = (plans: any[]): BaseFormConfig[] => [
                 message: 'Invalid phone number',
             },
         },
+    },
+    {
+        name: 'assignedTrainerId',
+        label: 'Assigned Trainer',
+        inputType: 'select',
+        icon: <IconUserCheck style={{ width: rem(16) }} />,
+        placeholder: 'Select a trainer',
+        data: trainersList || [],
+        rules: { required: false },
     },
     {
         name: 'planId',

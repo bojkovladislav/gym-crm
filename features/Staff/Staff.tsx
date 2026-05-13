@@ -17,6 +17,7 @@ export interface StaffMember {
     password: string;
     image: string;
     role: UserRole;
+    baseSalary: number;
 }
 
 export interface Props {

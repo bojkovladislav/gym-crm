@@ -37,7 +37,11 @@ export interface MaintenanceRequestData {
     cost: number;
 }
 
-export default function EquipmentLog() {
+interface Props {
+    readOnly: boolean;
+}
+
+export default function EquipmentLog({ readOnly }: Props) {
     const {
         equipment,
         stats,
@@ -79,10 +83,10 @@ export default function EquipmentLog() {
             <PageHeader
                 entityInPlural='Equipment Log'
                 entityInSingular='Equipment'
-                subTitle='Track gym assets, monitor machine status, and manage maintenance.'
-                formTitle='Log New Gym Equipment'
-                onSubmit={addNewEquipment}
-                inputs={equipmentInputs}
+                subTitle={`Track gym assets, monitor machine status${!readOnly ? ', and manage maintenance.' : ''}`}
+                formTitle={!readOnly ? 'Log New Gym Equipment' : undefined}
+                onSubmit={!readOnly ? addNewEquipment : undefined}
+                inputs={!readOnly ? equipmentInputs : undefined}
             />
 
             <EquipmentStats stats={stats} />
@@ -93,6 +97,7 @@ export default function EquipmentLog() {
             />
 
             <EquipmentContent
+                readOnly={readOnly}
                 equipment={equipment}
                 removeEquipment={removeEquipment}
                 inputs={equipmentInputs}

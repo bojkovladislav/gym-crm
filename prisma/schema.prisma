@@ -22,12 +22,13 @@ model User {
   emailVerified Boolean   @default(false)
   image         String?
   role          UserRole  @default(WORKER)
-  baseSalary    Float     @default(0)
+  baseSalary    Float?     @default(0)
   transactions  Transaction[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  clients       Member[]      @relation("TrainerMembers")
 
   @@unique([email])
   @@map("user")
@@ -110,6 +111,8 @@ model Member {
   joinedAt     DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   transactions Transaction[]
+  assignedTrainerId String?
+  assignedTrainer   User?     @relation("TrainerMembers", fields: [assignedTrainerId], references: [id])
 
   @@map("members")
 }
@@ -175,8 +178,10 @@ model Event {
   type        EventType
   start       DateTime
   end         DateTime
-  amount      Float     
-  equipmentId String?  
+  amount      Float
+  memberName  String?
+  description String?   
+  equipmentId String?
   equipment   Equipment? @relation(fields: [equipmentId], references: [id])
   isCompleted Boolean   @default(false)
   transactions Transaction[]

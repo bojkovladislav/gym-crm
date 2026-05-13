@@ -1,5 +1,7 @@
 'use server';
 
+import { EventType, UserRole } from '@/app/generated/prisma/enums';
+import { AppointmentFormValues } from '@/features/MyClients/CreateAppointmentModal';
 import prisma from '@/lib/prisma';
 
 export async function getEvents() {
@@ -55,5 +57,36 @@ export async function completeEvent(eventId: string) {
         }
 
         return transaction;
+    });
+}
+
+export async function createAppointmentEvent(
+    trainerId: string,
+    memberName: string,
+    data: AppointmentFormValues,
+) {
+    const trainer = await prisma.user.findUnique({
+        where: { id: trainerId, role: UserRole.TRAINER },
+    });
+
+    return await prisma.$transaction(async (tx) => {
+        const [hours, minutes] = data.startTime.split(':').map(Number);
+        const start = new Date(data.date!);
+        start.setHours(hours, minutes, 0, 0);
+
+        const durationMinutes = parseInt(data.duration.split(' ')[0]);
+        const end = new Date(start.getTime() + durationMinutes * 60000);
+
+        return await tx.event.create({
+            data: {
+                title: `${data.title} ${trainer ? `(Trainer: ${trainer.name})` : ''}`,
+                type: EventType.TRAINER_SESSION,
+                description: data.notes,
+                memberName,
+                amount: 0, // for now. We will calculate amount based on the trainer percentage later on
+                start,
+                end,
+            },
+        });
     });
 }

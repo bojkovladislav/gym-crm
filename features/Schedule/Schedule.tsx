@@ -15,6 +15,8 @@ export interface Event {
     type: EventType;
     start: Date;
     end: Date;
+    memberName: string | null;
+    description: string | null;
     amount: number;
     isCompleted: boolean;
     equipmentId: string | null;
@@ -24,7 +26,11 @@ export interface Event {
     } | null;
 }
 
-export default function Schedule() {
+interface Props {
+    readOnly: boolean;
+}
+
+export default function Schedule({ readOnly }: Props) {
     const [events, setEvents] = useState<Event[]>([]);
 
     const getBackgroundColor = (eventType: EventType, isCompleted: boolean) => {
@@ -93,6 +99,7 @@ export default function Schedule() {
 
                 return (
                     <EventMenu
+                        readOnly={readOnly}
                         event={data}
                         handleCompleteEvent={handleCompleteEvent}
                     />

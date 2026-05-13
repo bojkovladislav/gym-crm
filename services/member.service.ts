@@ -1,5 +1,6 @@
 'use server';
 
+import { UserRole } from '@/app/generated/prisma/enums';
 import prisma from '@/lib/prisma';
 
 export async function editMember(
@@ -100,4 +101,22 @@ export async function memberCheckIn(memberId: string) {
     });
 
     return { message: 'You have been successfully authenticated. Welcome In' };
+}
+
+export async function getTrainerMembers(trainerId: string) {
+    return await prisma.member.findMany({
+        where: { assignedTrainerId: trainerId },
+    });
+}
+
+export async function getActiveTrainers() {
+    const trainers = await prisma.user.findMany({
+        where: { role: UserRole.TRAINER },
+        select: { id: true, name: true },
+    });
+
+    return trainers.map((trainer) => ({
+        value: trainer.id,
+        label: trainer.name,
+    }));
 }

@@ -3,6 +3,8 @@
 import {
     deleteMember,
     editMember,
+    getActiveTrainers,
+    getTrainerMembers,
     memberCheckIn,
 } from '@/services/member.service';
 
@@ -44,5 +46,25 @@ export async function memberCheckInAction(keyFobId: string) {
             success: false,
             error: "Couldn't initiate member access procedure",
         };
+    }
+}
+
+export async function getTrainerMembersAction(trainerId: string) {
+    try {
+        const members = await getTrainerMembers(trainerId);
+
+        return { success: true, data: members };
+    } catch (error) {
+        return { success: false, error: 'Failed to get trainer members.' };
+    }
+}
+
+export async function getActiveTrainersAction() {
+    try {
+        const trainers = await getActiveTrainers();
+
+        return { success: true, data: trainers };
+    } catch (error) {
+        return { success: false, error: 'Failed to get all active trainers.' };
     }
 }

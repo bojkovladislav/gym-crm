@@ -11,9 +11,12 @@ import {
 
 export interface Member {
     id: string;
-    keyFobId: string;
+    keyFobId: string | null;
     dob: string;
     name: string;
+    assignedTrainerId: string | null;
+    subscriptionStartDate: Date;
+    subscriptionEndDate: Date;
     email: string;
     phoneNumber: string;
     planId: string;
@@ -33,6 +36,7 @@ export default function Members() {
         members,
         plans,
         loading,
+        activeTrainers,
         addNewMember,
         editMember,
         deleteMember,
@@ -49,7 +53,7 @@ export default function Members() {
             loading={loading}
             tableHeaders={tableHeaders}
             fieldsToShow={fieldsToShow}
-            personInputs={getPersonFields(plans)}
+            personInputs={getPersonFields(plans, activeTrainers)}
             personActions={getPersonActions(deleteMember, checkIn)}
             addNewPerson={addNewMember}
             editPerson={editMember}

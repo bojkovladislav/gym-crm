@@ -2,12 +2,22 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { keyFobIdGenerator } from '@/helpers/keyFobIdGenerator';
 import { formatDateString } from '@/helpers/formatters';
-import { updateMember, removeMember } from '@/actions/member.action';
+import {
+    updateMember,
+    removeMember,
+    getActiveTrainersAction,
+} from '@/actions/member.action';
 import { Member, Plan } from '@/features/Members/Members';
 import { memberCheckIn } from '@/services/member.service';
 
 export const useMembers = () => {
     const [members, setMembers] = useState<Member[]>([]);
+    const [activeTrainers, setActiveTrainers] = useState<
+        {
+            value: string;
+            label: string;
+        }[]
+    >([]);
     const [plans, setPlans] = useState<{ value: string; label: string }[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -49,6 +59,14 @@ export const useMembers = () => {
         await fetchInitialData();
     };
 
+    const getTrainers = async () => {
+        const response = await getActiveTrainersAction();
+
+        if (response && response.data) {
+            setActiveTrainers(response.data);
+        }
+    };
+
     const addNewMember = async (data: Member) => {
         const newMember = {
             ...data,
@@ -70,12 +88,15 @@ export const useMembers = () => {
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        getTrainers();
         fetchInitialData();
     }, []);
 
     return {
         members,
         plans,
+        activeTrainers,
         loading,
         addNewMember,
         editMember,

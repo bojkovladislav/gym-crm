@@ -5,10 +5,15 @@ import EventActions from './EventActions';
 
 interface Props {
     event: Event;
+    readOnly: boolean;
     handleCompleteEvent: (eventId: string) => void;
 }
 
-export default function EventMenu({ event, handleCompleteEvent }: Props) {
+export default function EventMenu({
+    event,
+    handleCompleteEvent,
+    readOnly,
+}: Props) {
     return (
         <Menu shadow='md' width={220} position='right-start' withArrow>
             <Menu.Target>
@@ -35,6 +40,7 @@ export default function EventMenu({ event, handleCompleteEvent }: Props) {
 
             <EventActions
                 event={event}
+                readOnly={readOnly}
                 handleCompleteEvent={handleCompleteEvent}
             />
         </Menu>
