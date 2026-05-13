@@ -6,6 +6,7 @@ import {
     IconCalendarClock,
     IconTrash,
     IconPhone,
+    IconAdjustmentsAlt,
 } from '@tabler/icons-react';
 import { rem } from '@mantine/core';
 import { BaseFormConfig } from '../../components/ActionForm/ActionForm';
@@ -88,7 +89,10 @@ export const getPersonFields = (plans: any[]): BaseFormConfig[] => [
     },
 ];
 
-export const getPersonActions = (onDelete: (id: string) => void): Action[] => [
+export const getPersonActions = (
+    onDelete: (id: string) => void,
+    checkIn: (id: string) => void,
+): Action[] => [
     {
         name: 'edit',
         label: 'Edit Profile',
@@ -106,6 +110,12 @@ export const getPersonActions = (onDelete: (id: string) => void): Action[] => [
         label: 'View Attendance',
         icon: <IconCalendarClock size={14} />,
         action: () => {},
+    },
+    {
+        name: 'checkIn-simulation',
+        label: 'Simulate Check In',
+        icon: <IconAdjustmentsAlt size={14} />,
+        action: ((id: string | number) => checkIn(id as string)) as () => void,
     },
     {
         name: 'delete',

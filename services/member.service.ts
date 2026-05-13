@@ -1,3 +1,5 @@
+'use server';
+
 import prisma from '@/lib/prisma';
 
 export async function editMember(
@@ -17,8 +19,7 @@ export async function deleteMember(memberId: string) {
     return await prisma.member.delete({ where: { id: memberId } });
 }
 
-export async function memberCheckIn(keyFobId: string) {
-    const memberId = keyFobId.split('-')[keyFobId.length - 1];
+export async function memberCheckIn(memberId: string) {
     const member = await prisma.member.findUnique({ where: { id: memberId } });
 
     if (!member) throw new Error('Member not found');
@@ -87,6 +88,10 @@ export async function memberCheckIn(keyFobId: string) {
                 subscriptionEndDate: endDate,
             },
         });
+
+        return {
+            message: 'You have successfully activated your subscription.',
+        };
     }
 
     await prisma.member.update({

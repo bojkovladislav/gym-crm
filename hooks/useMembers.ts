@@ -4,6 +4,7 @@ import { keyFobIdGenerator } from '@/helpers/keyFobIdGenerator';
 import { formatDateString } from '@/helpers/formatters';
 import { updateMember, removeMember } from '@/actions/member.action';
 import { Member, Plan } from '@/features/Members/Members';
+import { memberCheckIn } from '@/services/member.service';
 
 export const useMembers = () => {
     const [members, setMembers] = useState<Member[]>([]);
@@ -43,6 +44,11 @@ export const useMembers = () => {
         }
     };
 
+    const checkIn = async (keyFobId: string) => {
+        await memberCheckIn(keyFobId);
+        await fetchInitialData();
+    };
+
     const addNewMember = async (data: Member) => {
         const newMember = {
             ...data,
@@ -67,5 +73,13 @@ export const useMembers = () => {
         fetchInitialData();
     }, []);
 
-    return { members, plans, loading, addNewMember, editMember, deleteMember };
+    return {
+        members,
+        plans,
+        loading,
+        addNewMember,
+        editMember,
+        deleteMember,
+        checkIn,
+    };
 };

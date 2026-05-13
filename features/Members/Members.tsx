@@ -29,8 +29,15 @@ export interface Plan {
 }
 
 export default function Members() {
-    const { members, plans, loading, addNewMember, editMember, deleteMember } =
-        useMembers();
+    const {
+        members,
+        plans,
+        loading,
+        addNewMember,
+        editMember,
+        deleteMember,
+        checkIn,
+    } = useMembers();
 
     return (
         <PeopleManagement
@@ -43,7 +50,7 @@ export default function Members() {
             tableHeaders={tableHeaders}
             fieldsToShow={fieldsToShow}
             personInputs={getPersonFields(plans)}
-            personActions={getPersonActions(deleteMember)}
+            personActions={getPersonActions(deleteMember, checkIn)}
             addNewPerson={addNewMember}
             editPerson={editMember}
         />

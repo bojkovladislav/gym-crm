@@ -52,6 +52,9 @@ export default function ActionMenu<T extends { id: string; name: string }>({
             action.name === 'delete' &&
             action.permissions?.includes(userRole as Role),
     );
+    const checkInAction = actions.find(
+        (action) => action.name === 'checkIn-simulation',
+    );
     const actionsVisible = userRole
         ? actions.some((action) => {
               if (action.permissions) {
@@ -159,6 +162,11 @@ export default function ActionMenu<T extends { id: string; name: string }>({
                                 onClick={() => {
                                     if (action.name === 'edit') {
                                         setSelectedPerson(currentObject);
+                                    } else if (
+                                        action.name === 'checkIn-simulation' &&
+                                        checkInAction
+                                    ) {
+                                        checkInAction.action(currentObject.id);
                                     } else {
                                         (action.action as () => void)();
                                     }
