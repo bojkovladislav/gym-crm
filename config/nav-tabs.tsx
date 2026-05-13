@@ -59,10 +59,4 @@ export const tabs: Tab[] = [
         roles: [Role.ADMIN, Role.OWNER],
         href: '/billing-sales',
     },
-    {
-        title: 'Settings',
-        icon: <IconSettings size={20} />,
-        roles: [Role.OWNER], // Restricted to Owner only
-        href: '/settings',
-    },
 ];

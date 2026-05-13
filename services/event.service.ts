@@ -39,15 +39,13 @@ export async function completeEvent(eventId: string) {
 
         const transaction = await tx.transaction.create({
             data: {
-                amount: isExpense ? -event.amount : event.amount,
+                amount: event.amount,
                 type: isExpense ? 'EXPENSE' : 'INCOME',
                 description: `${event.type}: ${event.title}`,
                 category: event.type,
                 eventId: event.id,
             },
         });
-
-        console.log(transaction);
 
         if (event.equipmentId) {
             await tx.equipment.update({

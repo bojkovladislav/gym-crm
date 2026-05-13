@@ -56,9 +56,7 @@ export default function Schedule() {
     }
 
     const handleCompleteEvent = async (eventId: string) => {
-        const { success, data, error } = await completeEventAction(eventId);
-
-        console.log(success, data, error);
+        const { success } = await completeEventAction(eventId);
 
         if (success) {
             await fetchEvents();

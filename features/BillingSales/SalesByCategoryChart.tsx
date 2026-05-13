@@ -1,6 +1,8 @@
 'use client';
 
+import { getTransactionChartDataAction } from '@/actions/transaction.action';
 import { Paper, Text, Group, Stack, Badge } from '@mantine/core';
+import { useEffect, useState } from 'react';
 import {
     PieChart,
     Pie,
@@ -10,22 +12,39 @@ import {
     Tooltip,
 } from 'recharts';
 
-const mockData = [
-    { name: 'Subscriptions', value: 4500, color: '#228be6' },
-    { name: 'Trainer Sessions', value: 2100, color: '#40c057' },
-    { name: 'Maintenance', value: 800, color: '#fa5252' },
-    { name: 'Other', value: 300, color: '#fab005' },
-];
+interface ChartData {
+    name: string;
+    value: number;
+    color: string;
+}
 
 export default function SalesByCategoryChart() {
+    const [chartData, setChartData] = useState<ChartData[]>([]);
+
+    useEffect(() => {
+        async function getChartData() {
+            try {
+                const data = await getTransactionChartDataAction();
+
+                if (data.data && data.success) {
+                    setChartData(data.data);
+                }
+            } catch (error) {
+                console.error('Failed to get Transaction Chart Data!');
+            }
+        }
+
+        getChartData();
+    }, []);
+
     return (
         <Paper withBorder radius='md' p='md' h='100%'>
             <Stack gap='xs'>
                 <div style={{ height: 300, width: 300 }}>
-                    <ResponsiveContainer>
+                    <ResponsiveContainer width='100%' height='100%'>
                         <PieChart>
                             <Pie
-                                data={mockData}
+                                data={chartData}
                                 cx='50%'
                                 cy='50%'
                                 innerRadius={60}
@@ -33,7 +52,7 @@ export default function SalesByCategoryChart() {
                                 paddingAngle={5}
                                 dataKey='value'
                             >
-                                {mockData.map((entry, index) => (
+                                {chartData.map((entry, index) => (
                                     <Cell
                                         key={`cell-${index}`}
                                         fill={entry.color}
@@ -53,7 +72,7 @@ export default function SalesByCategoryChart() {
                 </div>
 
                 <Stack gap={10} mt='md'>
-                    {mockData.map((item) => (
+                    {chartData.map((item) => (
                         <Group key={item.name} justify='space-between'>
                             <Group gap='xs'>
                                 <Badge

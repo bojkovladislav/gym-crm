@@ -14,57 +14,14 @@ import {
     IconExternalLink,
     IconDotsVertical,
 } from '@tabler/icons-react';
+import { Transaction } from './BillingSales';
 
-const mockTransactions = [
-    {
-        id: '1',
-        amount: 50.0,
-        type: 'INCOME',
-        category: 'Subscription',
-        description: 'Monthly Plan - Mike Ross',
-        createdAt: new Date('2026-05-10T10:00:00'),
-        member: { name: 'Mike Ross' },
-    },
-    {
-        id: '2',
-        amount: 450.0,
-        type: 'EXPENSE',
-        category: 'Utilities',
-        description: 'Electricity & Water Bill (May)',
-        createdAt: new Date('2026-05-08T14:30:00'),
-        member: null,
-    },
-    {
-        id: '3',
-        amount: 75.0,
-        type: 'INCOME',
-        category: 'TRAINER_SESSION',
-        description: 'Bodybuilding 101 with Trainer Mike',
-        createdAt: new Date('2026-05-07T09:15:00'),
-        member: { name: 'Rachel Zane' },
-    },
-    {
-        id: '4',
-        amount: 120.0,
-        type: 'EXPENSE',
-        category: 'MAINTENANCE',
-        description: 'Treadmill-1 Belt Replacement',
-        createdAt: new Date('2026-05-05T16:45:00'),
-        member: null,
-    },
-    {
-        id: '5',
-        amount: 25.0,
-        type: 'INCOME',
-        category: 'Subscription',
-        description: 'Weekly Pass',
-        createdAt: new Date('2026-05-01T11:00:00'),
-        member: { name: 'Harvey Specter' },
-    },
-];
+interface Props {
+    transactions: Transaction[];
+}
 
-export default function BillingDataTable() {
-    const rows = mockTransactions.map((tx) => (
+export default function BillingDataTable({ transactions }: Props) {
+    const rows = transactions.map((tx) => (
         <Table.Tr key={tx.id}>
             <Table.Td>
                 <Text size='sm' fw={500}>

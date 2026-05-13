@@ -4,7 +4,7 @@ import StatisticBlock from './StatisticBlock';
 
 export interface StatisticBlockType {
     title: string;
-    value: number;
+    value: number | string;
     icon: ElementType;
     color: string;
 }
