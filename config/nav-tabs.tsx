@@ -4,6 +4,7 @@ import {
     IconCalendarEvent,
     IconCash,
     IconLayoutDashboard,
+    IconUserCheck,
     IconUsers,
     IconUsersGroup,
 } from '@tabler/icons-react';
@@ -20,7 +21,12 @@ export const tabs: Tab[] = [
     {
         title: 'Dashboard',
         icon: <IconLayoutDashboard size={20} />,
-        roles: [UserRole.WORKER, UserRole.ADMIN, UserRole.OWNER],
+        roles: [
+            UserRole.WORKER,
+            UserRole.ADMIN,
+            UserRole.OWNER,
+            UserRole.TRAINER,
+        ],
         href: '/dashboard',
     },
     {
@@ -31,9 +37,9 @@ export const tabs: Tab[] = [
     },
     {
         title: 'My clients',
-        icon: <IconUsers size={20} />,
+        icon: <IconUserCheck size={20} />,
         roles: [UserRole.TRAINER],
-        href: '/members',
+        href: '/my-clients',
     },
     {
         title: 'Staff',
@@ -44,13 +50,23 @@ export const tabs: Tab[] = [
     {
         title: 'Equipment Log',
         icon: <IconBarbell size={20} />,
-        roles: [UserRole.WORKER, UserRole.ADMIN, UserRole.OWNER],
+        roles: [
+            UserRole.WORKER,
+            UserRole.ADMIN,
+            UserRole.OWNER,
+            UserRole.TRAINER,
+        ],
         href: '/equipment',
     },
     {
         title: 'Schedule',
         icon: <IconCalendarEvent size={20} />,
-        roles: [UserRole.WORKER, UserRole.ADMIN, UserRole.OWNER],
+        roles: [
+            UserRole.WORKER,
+            UserRole.ADMIN,
+            UserRole.OWNER,
+            UserRole.TRAINER,
+        ],
         href: '/schedule',
     },
     {
@@ -58,5 +74,11 @@ export const tabs: Tab[] = [
         icon: <IconCash size={20} />,
         roles: [UserRole.ADMIN, UserRole.OWNER],
         href: '/billing-sales',
+    },
+    {
+        title: 'Earnings',
+        icon: <IconCash size={20} />,
+        roles: [UserRole.ADMIN, UserRole.OWNER, UserRole.TRAINER],
+        href: '/earnings',
     },
 ];
