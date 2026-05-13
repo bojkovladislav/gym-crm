@@ -9,6 +9,7 @@ datasource db {
 }
 
 enum UserRole {
+  TRAINER
   WORKER
   ADMIN
   OWNER
@@ -21,6 +22,8 @@ model User {
   emailVerified Boolean   @default(false)
   image         String?
   role          UserRole  @default(WORKER)
+  baseSalary    Float     @default(0)
+  transactions  Transaction[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
@@ -195,4 +198,6 @@ model Transaction {
   event       Event?      @relation(fields: [eventId], references: [id])
   memberId    String?
   member      Member?     @relation(fields: [memberId], references: [id])
+  staffId     String?
+  staff       User?           @relation(fields: [staffId], references: [id])
 }

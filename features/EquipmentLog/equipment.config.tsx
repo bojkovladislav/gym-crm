@@ -1,5 +1,4 @@
 import { BaseFormConfig } from '@/components/ActionForm/ActionForm';
-import { Role } from '@/config/nav-tabs';
 import {
     IconActivity,
     IconBarbell,
@@ -21,6 +20,7 @@ import { Action } from '../ActionMenu/ActionMenu';
 import {
     EquipmentCategory,
     EquipmentStatus,
+    UserRole,
 } from '@/app/generated/prisma/enums';
 
 interface Category {
@@ -190,7 +190,7 @@ export const getEquipmentActions = (
             color: 'red',
             action: ((id: string | number) =>
                 onDelete(id as string)) as () => void,
-            permissions: [Role.ADMIN, Role.OWNER],
+            permissions: [UserRole.ADMIN, UserRole.OWNER],
         },
     );
 

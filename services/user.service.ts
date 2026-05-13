@@ -1,6 +1,6 @@
 'use server';
 
-import { Role } from '@/config/nav-tabs';
+import { UserRole } from '@/app/generated/prisma/enums';
 import prisma from '@/lib/prisma';
 
 export async function getUserRoleById(userId: string) {
@@ -14,7 +14,7 @@ export async function getUserRoleById(userId: string) {
 
 export async function editUser(
     userId: string,
-    updatedData: { name: string; email: string; role: Role },
+    updatedData: { name: string; email: string; role: UserRole },
 ) {
     const updatedUser = await prisma.user.update({
         where: { id: userId },

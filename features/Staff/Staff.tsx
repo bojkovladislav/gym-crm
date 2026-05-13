@@ -1,6 +1,5 @@
 'use client';
 
-import { Role } from '@/config/nav-tabs';
 import { PeopleManagement } from '../PeopleManagement';
 import {
     fieldsToShow,
@@ -9,6 +8,7 @@ import {
     tableHeaders,
 } from './staff.config';
 import { useStaff } from '@/hooks/useStaff';
+import { UserRole } from '@/app/generated/prisma/enums';
 
 export interface StaffMember {
     id: string;
@@ -16,17 +16,17 @@ export interface StaffMember {
     email: string;
     password: string;
     image: string;
-    role: Role;
+    role: UserRole;
 }
 
 export interface Props {
-    userRole: Role;
+    userRole: UserRole;
 }
 
 export default function Staff({ userRole }: Props) {
     const { staff, loading, addNewStaff, editStaff, deleteStaff } = useStaff();
 
-    const subTitle = `${userRole === Role.WORKER ? 'View' : 'Manage'} team roles, system access, and contact information.`;
+    const subTitle = `${userRole === UserRole.WORKER ? 'View' : 'Manage'} team roles, system access, and contact information.`;
 
     return (
         <PeopleManagement
@@ -41,7 +41,9 @@ export default function Staff({ userRole }: Props) {
             personInputs={getStaffFields()}
             personEditInputs={getStaffFields(true)}
             personActions={getStaffActions(deleteStaff)}
-            addNewPerson={userRole === Role.WORKER ? undefined : addNewStaff}
+            addNewPerson={
+                userRole === UserRole.WORKER ? undefined : addNewStaff
+            }
             editPerson={editStaff}
         />
     );

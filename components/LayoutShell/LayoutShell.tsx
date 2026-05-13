@@ -2,14 +2,15 @@
 
 import { AppShell, Group, Stack } from '@mantine/core';
 import { Logo } from '../Logo';
-import { Role, tabs } from '@/config/nav-tabs';
+import { tabs } from '@/config/nav-tabs';
 import { Tab } from '../Tab';
 import { SignOut } from '@/features/SignOut';
 import { usePathname } from 'next/navigation';
+import { UserRole } from '@/app/generated/prisma/enums';
 
 interface Props {
     children: React.ReactNode;
-    userRole: Role | null;
+    userRole: UserRole | null;
 }
 
 export default function LayoutShell({ children, userRole }: Props) {
@@ -40,7 +41,7 @@ export default function LayoutShell({ children, userRole }: Props) {
             <AppShell.Navbar p='md'>
                 <Stack>
                     {tabs
-                        .filter((tab) => tab.roles.includes(Role.OWNER)) // TODO use userRole!
+                        .filter((tab) => tab.roles.includes(UserRole.OWNER)) // TODO use userRole!
                         .map(({ title, icon, href }) => (
                             <Tab
                                 key={title}

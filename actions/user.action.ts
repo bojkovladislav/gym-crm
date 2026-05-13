@@ -1,6 +1,6 @@
 'use server';
 
-import { Role } from '@/config/nav-tabs';
+import { UserRole } from '@/app/generated/prisma/enums';
 import { getSessionOnServer } from '@/lib/auth-server';
 import { deleteUser, editUser, getUserRoleById } from '@/services/user.service';
 
@@ -25,7 +25,7 @@ export async function getUserRoleAction() {
 
 export async function updateUser(
     userId: string,
-    updatedData: { name: string; email: string; role: Role },
+    updatedData: { name: string; email: string; role: UserRole },
 ) {
     try {
         const user = await editUser(userId, updatedData);

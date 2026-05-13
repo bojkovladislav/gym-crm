@@ -1,6 +1,6 @@
 import { getUserRoleAction } from '@/actions/user.action';
 import { LayoutShell } from '@/components/LayoutShell';
-import { Role } from '@/config/nav-tabs';
+import { UserRole } from '../generated/prisma/enums';
 
 export default async function MainLayout({
     children,
@@ -10,6 +10,8 @@ export default async function MainLayout({
     const userRole = await getUserRoleAction();
 
     return (
-        <LayoutShell userRole={userRole.data as Role}>{children}</LayoutShell>
+        <LayoutShell userRole={userRole.data as UserRole}>
+            {children}
+        </LayoutShell>
     );
 }

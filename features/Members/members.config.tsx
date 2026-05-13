@@ -11,8 +11,8 @@ import {
 import { rem } from '@mantine/core';
 import { BaseFormConfig } from '../../components/ActionForm/ActionForm';
 import { Member } from './Members';
-import { Role } from '@/config/nav-tabs';
 import { Action } from '../ActionMenu/ActionMenu';
+import { UserRole } from '@/app/generated/prisma/enums';
 
 export const tableHeaders = [
     'Name',
@@ -123,6 +123,6 @@ export const getPersonActions = (
         icon: <IconTrash size={14} />,
         color: 'red',
         action: ((id: string | number) => onDelete(id as string)) as () => void,
-        permissions: [Role.ADMIN, Role.OWNER],
+        permissions: [UserRole.ADMIN, UserRole.OWNER],
     },
 ];

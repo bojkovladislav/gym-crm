@@ -7,8 +7,8 @@ import { ReactNode, useEffect, useState } from 'react';
 import ActionForm, {
     BaseFormConfig,
 } from '../../components/ActionForm/ActionForm';
-import { Role } from '@/config/nav-tabs';
 import { getUserRoleAction } from '@/actions/user.action';
+import { UserRole } from '@/app/generated/prisma/enums';
 
 type SpecialActionType = 'edit' | 'delete';
 
@@ -16,7 +16,7 @@ interface BaseAction {
     label: string;
     icon: ReactNode;
     color?: string;
-    permissions?: Role[];
+    permissions?: UserRole[];
 }
 
 interface GeneralAction extends BaseAction {
@@ -46,11 +46,11 @@ export default function ActionMenu<T extends { id: string; name: string }>({
 }: Props<T>) {
     const [requestForDeletion, setRequestForDeletion] = useState(false);
     const [selectedPerson, setSelectedPerson] = useState<T | null>(null);
-    const [userRole, setUserRole] = useState<Role | null>(null);
+    const [userRole, setUserRole] = useState<UserRole | null>(null);
     const deleteAction = actions.find(
         (action) =>
             action.name === 'delete' &&
-            action.permissions?.includes(userRole as Role),
+            action.permissions?.includes(userRole as UserRole),
     );
     const checkInAction = actions.find(
         (action) => action.name === 'checkIn-simulation',
@@ -85,7 +85,7 @@ export default function ActionMenu<T extends { id: string; name: string }>({
             try {
                 const role = await getUserRoleAction();
 
-                setUserRole(role.data as Role);
+                setUserRole(role.data as UserRole);
             } catch (error) {
                 throw new Error('Failed to get User Role!');
             }
@@ -152,8 +152,9 @@ export default function ActionMenu<T extends { id: string; name: string }>({
                             }
 
                             return (
-                                action.permissions.includes(userRole as Role) &&
-                                baseCheck
+                                action.permissions.includes(
+                                    userRole as UserRole,
+                                ) && baseCheck
                             );
                         })
                         .map((action) => (
