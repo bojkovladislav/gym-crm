@@ -3,7 +3,7 @@ import { Button, Text, Title } from '@mantine/core';
 import { IconLogout } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Modal } from '@/components/Modal/Modal';
+import { Modal } from '@/components/Modal';
 
 export default function SignOut() {
     const [loading, setLoading] = useState(false);

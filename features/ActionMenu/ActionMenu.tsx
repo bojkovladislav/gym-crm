@@ -1,6 +1,5 @@
 'use client';
 
-import { Modal } from '@/components/Modal/Modal';
 import { ActionIcon, Menu, rem, Text, Title } from '@mantine/core';
 import { IconDotsVertical, IconTrash } from '@tabler/icons-react';
 import { ReactNode, useEffect, useState } from 'react';
@@ -9,6 +8,7 @@ import ActionForm, {
 } from '../../components/ActionForm/ActionForm';
 import { getUserRoleAction } from '@/actions/user.action';
 import { UserRole } from '@/app/generated/prisma/enums';
+import { Modal } from '@/components/Modal';
 
 type SpecialActionType = 'edit' | 'delete';
 
