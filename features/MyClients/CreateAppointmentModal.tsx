@@ -27,10 +27,15 @@ export interface AppointmentFormValues {
 
 interface Props {
     clientName: string;
+    clientId: string;
     trainerId: string;
 }
 
-export function CreateAppointmentModal({ trainerId, clientName }: Props) {
+export function CreateAppointmentModal({
+    trainerId,
+    clientName,
+    clientId,
+}: Props) {
     const [opened, { open, close }] = useDisclosure(false);
 
     const { control, handleSubmit, reset } = useForm<AppointmentFormValues>({
@@ -45,7 +50,12 @@ export function CreateAppointmentModal({ trainerId, clientName }: Props) {
 
     const onSubmit = async (data: AppointmentFormValues) => {
         try {
-            await createAppointmentEventAction(trainerId, clientName, data);
+            await createAppointmentEventAction(
+                trainerId,
+                clientId,
+                clientName,
+                data,
+            );
 
             close();
             reset();
@@ -66,7 +76,6 @@ export function CreateAppointmentModal({ trainerId, clientName }: Props) {
             >
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Stack gap='md'>
-                        {/* New Title Input */}
                         <Controller
                             name='title'
                             control={control}

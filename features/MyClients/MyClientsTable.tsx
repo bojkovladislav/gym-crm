@@ -81,6 +81,7 @@ export default function MyClientsTable({ trainerId, clients }: Props) {
                         </Tooltip>
 
                         <CreateAppointmentModal
+                            clientId={client.id}
                             clientName={client.name}
                             trainerId={trainerId}
                         />

@@ -3,6 +3,7 @@
 import { EventType, UserRole } from '@/app/generated/prisma/enums';
 import { AppointmentFormValues } from '@/features/MyClients/CreateAppointmentModal';
 import prisma from '@/lib/prisma';
+import { MembershipPlan } from '@prisma/client';
 
 export async function getEvents() {
     const events = await prisma.event.findMany({
@@ -39,15 +40,25 @@ export async function completeEvent(eventId: string) {
 
         const isExpense = event.type === 'MAINTENANCE';
 
-        const transaction = await tx.transaction.create({
-            data: {
-                amount: event.amount,
-                type: isExpense ? 'EXPENSE' : 'INCOME',
-                description: `${event.type}: ${event.title}`,
-                category: event.type,
-                eventId: event.id,
-            },
-        });
+        if (event.trainerId && event.type === 'TRAINER_SESSION') {
+            const trainer = await tx.user.findUnique({
+                where: { id: event.trainerId, role: UserRole.TRAINER },
+                select: { sessionRate: true },
+            });
+
+            if (trainer && trainer.sessionRate && trainer.sessionRate > 0) {
+                await tx.transaction.create({
+                    data: {
+                        amount: trainer.sessionRate,
+                        type: 'EXPENSE',
+                        category: 'COMMISSION',
+                        description: `Commission: ${event.title}`,
+                        staffId: event.trainerId,
+                        eventId: event.id,
+                    },
+                });
+            }
+        }
 
         if (event.equipmentId) {
             await tx.equipment.update({
@@ -56,18 +67,51 @@ export async function completeEvent(eventId: string) {
             });
         }
 
-        return transaction;
+        if (event.amount <= 0) return null;
+
+        return await tx.transaction.create({
+            data: {
+                amount: event.amount,
+                type: isExpense ? 'EXPENSE' : 'INCOME',
+                description: `${event.type}: ${event.title}`,
+                category: event.type,
+                eventId: event.id,
+            },
+        });
     });
 }
 
 export async function createAppointmentEvent(
     trainerId: string,
+    memberId: string,
     memberName: string,
     data: AppointmentFormValues,
 ) {
     const trainer = await prisma.user.findUnique({
         where: { id: trainerId, role: UserRole.TRAINER },
     });
+    if (!trainer) throw new Error('Trainer not found');
+
+    const member = await prisma.member.findUnique({
+        where: { id: memberId },
+        select: { planId: true },
+    });
+    if (!member) throw new Error('Member not found');
+
+    const plan = await prisma.plan.findUnique({
+        where: { id: member.planId },
+        select: { name: true },
+    });
+    if (!plan) throw new Error('Membership plan not found');
+
+    let amount = 0;
+    const REGULAR_TRAINING_PRICE = 30;
+
+    if (plan.name === MembershipPlan.STANDARD) {
+        amount = REGULAR_TRAINING_PRICE;
+    } else if (plan.name === MembershipPlan.PREMIUM) {
+        amount = REGULAR_TRAINING_PRICE * 0.5;
+    }
 
     return await prisma.$transaction(async (tx) => {
         const [hours, minutes] = data.startTime.split(':').map(Number);
@@ -83,9 +127,10 @@ export async function createAppointmentEvent(
                 type: EventType.TRAINER_SESSION,
                 description: data.notes,
                 memberName,
-                amount: 0, // for now. We will calculate amount based on the trainer percentage later on
+                amount,
                 start,
                 end,
+                trainerId,
             },
         });
     });

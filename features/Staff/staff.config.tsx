@@ -4,6 +4,7 @@ import {
     IconShieldLock,
     IconTrash,
     IconCoin,
+    IconCash,
 } from '@tabler/icons-react';
 import { StaffMember } from './Staff';
 import { BaseFormConfig } from '@/components/ActionForm/ActionForm';
@@ -53,6 +54,13 @@ export const getStaffFields = (isEdit: boolean = false): BaseFormConfig[] => {
                 required: 'Base salary is required',
                 min: { value: 0, message: 'Salary cannot be negative' },
             },
+        },
+        {
+            name: 'sessionRate',
+            label: 'Session Rate ($)',
+            inputType: 'number',
+            icon: <IconCash size={16} />,
+            placeholder: 'e.g. 25',
         },
     ];
 

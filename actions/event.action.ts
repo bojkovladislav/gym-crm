@@ -30,12 +30,14 @@ export async function completeEventAction(eventId: string) {
 export async function createAppointmentEventAction(
     trainerId: string,
     memberId: string,
+    memberName: string,
     data: AppointmentFormValues,
 ) {
     try {
         const newEvent = await createAppointmentEvent(
             trainerId,
             memberId,
+            memberName,
             data,
         );
 

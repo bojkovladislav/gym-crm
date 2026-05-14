@@ -23,12 +23,14 @@ model User {
   image         String?
   role          UserRole  @default(WORKER)
   baseSalary    Float?     @default(0)
+  sessionRate   Float?     @default(0)
   transactions  Transaction[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
   clients       Member[]      @relation("TrainerMembers")
+  paychecks     Paycheck[]
 
   @@unique([email])
   @@map("user")
@@ -180,6 +182,7 @@ model Event {
   end         DateTime
   amount      Float
   memberName  String?
+  trainerId   String?
   description String?   
   equipmentId String?
   equipment   Equipment? @relation(fields: [equipmentId], references: [id])
@@ -205,4 +208,25 @@ model Transaction {
   member      Member?     @relation(fields: [memberId], references: [id])
   staffId     String?
   staff       User?           @relation(fields: [staffId], references: [id])
+  paycheckId  String?
+  paycheck    Paycheck? @relation(fields: [paycheckId], references: [id])
 }
+
+enum PaycheckStatus {
+  PENDING
+  PAID
+}
+
+model Paycheck {
+  id          String        @id @default(cuid())
+  userId      String        
+  user        User          @relation(fields: [userId], references: [id])
+  amount      Float         
+  periodStart DateTime
+  periodEnd   DateTime
+  status      PaycheckStatus @default(PENDING) 
+  createdAt   DateTime      @default(now())
+  
+  transactions Transaction[] 
+}
+

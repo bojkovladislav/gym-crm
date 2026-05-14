@@ -78,7 +78,7 @@ export const tabs: Tab[] = [
     {
         title: 'Earnings',
         icon: <IconCash size={20} />,
-        roles: [UserRole.ADMIN, UserRole.OWNER, UserRole.TRAINER],
+        roles: [UserRole.ADMIN, UserRole.WORKER, UserRole.TRAINER],
         href: '/earnings',
     },
 ];
