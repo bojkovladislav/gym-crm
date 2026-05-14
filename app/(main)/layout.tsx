@@ -1,6 +1,6 @@
 import { getUserRoleAction } from '@/actions/user.action';
 import { LayoutShell } from '@/components/LayoutShell';
-import { UserRole } from '../generated/prisma/enums';
+import { UserRole } from '../generated/prisma';
 
 export default async function MainLayout({
     children,
