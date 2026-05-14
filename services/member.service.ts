@@ -1,6 +1,6 @@
 'use server';
 
-import { UserRole } from '@/app/generated/prisma/enums';
+import { UserRole } from '@/app/generated/prisma';
 import prisma from '@/lib/prisma';
 
 export async function editMember(

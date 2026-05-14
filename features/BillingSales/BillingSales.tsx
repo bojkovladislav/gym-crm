@@ -3,7 +3,7 @@ import { Box, Group, Stack } from '@mantine/core';
 import BillingStats from './BillingStats';
 import BillingDataTable from './BillingDataTable';
 import SalesByCategoryChart from './SalesByCategoryChart';
-import { TransactionType } from '@/app/generated/prisma/enums';
+import { TransactionType } from '@/app/generated/prisma';
 import { getBillingDataAction } from '@/actions/transaction.action';
 
 export interface Transaction {

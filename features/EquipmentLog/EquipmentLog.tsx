@@ -4,10 +4,7 @@ import { PageHeader } from '@/components/PageHeader';
 import { Stack } from '@mantine/core';
 import { EquipmentStats } from './EquipmentStats';
 import { useEffect, useState } from 'react';
-import {
-    EquipmentCategory,
-    EquipmentStatus,
-} from '@/app/generated/prisma/enums';
+import { EquipmentCategory, EquipmentStatus } from '@/app/generated/prisma';
 import EquipmentContent from './EquipmentContent';
 import EquipmentFilter from './EquipmentFilter';
 import { equipmentInputs } from './equipment.config';

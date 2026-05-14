@@ -4,7 +4,7 @@ import {
     EquipmentCategory,
     EquipmentStatus,
     EventType,
-} from '@/app/generated/prisma/enums';
+} from '@/app/generated/prisma';
 import {
     Equipment,
     MaintenanceRequestData,

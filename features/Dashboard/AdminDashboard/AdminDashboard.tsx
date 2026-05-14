@@ -20,11 +20,11 @@ import {
 } from '@tabler/icons-react';
 import { getAdminDashboardStatsAction } from '@/actions/dashboard.action';
 import { StatisticBlocks } from '@/components/StatisticBlocks';
-import { EquipmentStatus } from '@/app/generated/prisma/enums';
 import Link from 'next/link';
 import EquipmentStatusChart from './EquipmentStatusChart';
 import OperationalActivityChart from './OperationalActivityChart';
 import { PageHeader } from '@/components/PageHeader';
+import { EquipmentStatus } from '@/app/generated/prisma';
 
 export interface AdminStats {
     equipmentStats: {

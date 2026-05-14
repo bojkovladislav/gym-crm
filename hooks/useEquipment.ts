@@ -12,7 +12,7 @@ import {
     MaintenanceRequestData,
 } from '@/features/EquipmentLog/EquipmentLog';
 import { EquipmentStatsData } from '@/features/EquipmentLog/EquipmentStats';
-import { EquipmentCategory } from '@/app/generated/prisma/enums';
+import { EquipmentCategory } from '@/app/generated/prisma';
 
 export const useEquipment = () => {
     const [equipment, setEquipment] = useState<Equipment[]>([]);

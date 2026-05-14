@@ -21,7 +21,7 @@ import {
     EquipmentCategory,
     EquipmentStatus,
     UserRole,
-} from '@/app/generated/prisma/enums';
+} from '@/app/generated/prisma';
 
 interface Category {
     value: EquipmentCategory;

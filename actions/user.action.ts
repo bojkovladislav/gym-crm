@@ -1,6 +1,6 @@
 'use server';
 
-import { UserRole } from '@/app/generated/prisma/enums';
+import { UserRole } from '@/app/generated/prisma';
 import { getSessionOnServer } from '@/lib/auth-server';
 import { deleteUser, editUser, getUserRoleById } from '@/services/user.service';
 

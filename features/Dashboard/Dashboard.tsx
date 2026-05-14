@@ -1,4 +1,4 @@
-import { UserRole } from '@/app/generated/prisma/enums';
+import { UserRole } from '@/app/generated/prisma';
 import { Box } from '@mantine/core';
 import WorkerDashboard from './WorkerDashboard';
 import TrainerDashboard from './TrainerDashboard';

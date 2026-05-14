@@ -1,7 +1,4 @@
-import {
-    EquipmentCategory,
-    EquipmentStatus,
-} from '@/app/generated/prisma/enums';
+import { EquipmentCategory, EquipmentStatus } from '@/app/generated/prisma';
 import {
     Equipment,
     MaintenanceRequestData,

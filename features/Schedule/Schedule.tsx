@@ -4,7 +4,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { EventType } from '@/app/generated/prisma/enums';
+import { EventType } from '@/app/generated/prisma';
 import { useEffect, useState } from 'react';
 import { completeEventAction, getEventsAction } from '@/actions/event.action';
 import EventMenu from './EventMenu';

@@ -13,7 +13,7 @@ import { rem } from '@mantine/core';
 import { BaseFormConfig } from '../../components/ActionForm/ActionForm';
 import { Member } from './Members';
 import { Action } from '../ActionMenu/ActionMenu';
-import { UserRole } from '@/app/generated/prisma/enums';
+import { UserRole } from '@/app/generated/prisma';
 
 export const tableHeaders = [
     'Name',

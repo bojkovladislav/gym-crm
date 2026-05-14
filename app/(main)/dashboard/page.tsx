@@ -1,5 +1,5 @@
 import { getUserRoleAction } from '@/actions/user.action';
-import { UserRole } from '@/app/generated/prisma/enums';
+import { UserRole } from '@/app/generated/prisma';
 import { Dashboard } from '@/features/Dashboard';
 import { getSessionOnServer } from '@/lib/auth-server';
 

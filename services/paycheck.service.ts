@@ -1,4 +1,4 @@
-import { PaycheckStatus } from '@/app/generated/prisma/enums';
+import { PaycheckStatus } from '@/app/generated/prisma';
 import prisma from '@/lib/prisma';
 
 export async function getUserPaycheckStats(userId: string) {

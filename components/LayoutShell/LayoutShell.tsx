@@ -6,7 +6,7 @@ import { tabs } from '@/config/nav-tabs';
 import { Tab } from '../Tab';
 import { SignOut } from '@/features/SignOut';
 import { usePathname } from 'next/navigation';
-import { UserRole } from '@/app/generated/prisma/enums';
+import { UserRole } from '@/app/generated/prisma';
 
 interface Props {
     children: React.ReactNode;

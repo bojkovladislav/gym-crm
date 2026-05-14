@@ -8,7 +8,7 @@ import {
     tableHeaders,
 } from './staff.config';
 import { useStaff } from '@/hooks/useStaff';
-import { UserRole } from '@/app/generated/prisma/enums';
+import { UserRole } from '@/app/generated/prisma';
 
 export interface StaffMember {
     id: string;

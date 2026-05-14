@@ -1,4 +1,4 @@
-import { UserRole } from '@/app/generated/prisma/enums';
+import { UserRole } from '@/app/generated/prisma';
 import {
     IconBarbell,
     IconCalendarEvent,

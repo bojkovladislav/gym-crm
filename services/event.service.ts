@@ -1,6 +1,6 @@
 'use server';
 
-import { EventType, UserRole } from '@/app/generated/prisma/enums';
+import { EventType, UserRole } from '@/app/generated/prisma';
 import { AppointmentFormValues } from '@/features/MyClients/CreateAppointmentModal';
 import prisma from '@/lib/prisma';
 import { MembershipPlan } from '@prisma/client';

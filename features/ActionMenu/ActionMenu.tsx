@@ -7,7 +7,7 @@ import ActionForm, {
     BaseFormConfig,
 } from '../../components/ActionForm/ActionForm';
 import { getUserRoleAction } from '@/actions/user.action';
-import { UserRole } from '@/app/generated/prisma/enums';
+import { UserRole } from '@/app/generated/prisma';
 import { Modal } from '@/components/Modal';
 
 type SpecialActionType = 'edit' | 'delete';

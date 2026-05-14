@@ -1,5 +1,5 @@
 import { getUserRoleAction } from '@/actions/user.action';
-import { UserRole } from '@/app/generated/prisma/enums';
+import { UserRole } from '@/app/generated/prisma';
 import { EquipmentLog } from '@/features/EquipmentLog';
 
 export default async function EquipmentPage() {

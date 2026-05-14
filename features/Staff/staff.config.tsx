@@ -9,7 +9,7 @@ import {
 import { StaffMember } from './Staff';
 import { BaseFormConfig } from '@/components/ActionForm/ActionForm';
 import { Action } from '../ActionMenu/ActionMenu';
-import { UserRole } from '@/app/generated/prisma/enums';
+import { UserRole } from '@/app/generated/prisma';
 
 export const tableHeaders = ['Name', 'Email', 'Role'];
 export const fieldsToShow: (keyof StaffMember)[] = ['name', 'email', 'role'];
