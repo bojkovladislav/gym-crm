@@ -1,9 +1,8 @@
 'use server';
 
-import { EventType, UserRole } from '@/app/generated/prisma';
+import { EventType, MembershipPlan, UserRole } from '@/app/generated/prisma';
 import { AppointmentFormValues } from '@/features/MyClients/CreateAppointmentModal';
 import prisma from '@/lib/prisma';
-import { MembershipPlan } from '@prisma/client';
 
 export async function getEvents() {
     const events = await prisma.event.findMany({
