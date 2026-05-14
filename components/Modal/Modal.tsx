@@ -11,7 +11,7 @@ interface Props {
     confirmAction: () => void;
 }
 
-export function Modal({
+export default function Modal({
     opened,
     onClose = () => {},
     title,
