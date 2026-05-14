@@ -1,56 +1,35 @@
-import { EventType } from '@/app/generated/prisma/enums';
 import prisma from '@/lib/prisma';
 
 async function main() {
-    const now = new Date();
-    const y = now.getFullYear();
-    const m = now.getMonth();
-    const d = now.getDate();
-
-    const mockEvents = [
+    const plans = [
         {
-            title: 'PT Session: Sarah J. (Trainer: Mike)',
-            type: EventType.TRAINER_SESSION,
-            start: new Date(y, m, d, 13, 0),
-            end: new Date(y, m, d, 14, 0),
-            amount: 45.0,
-            isCompleted: false,
+            name: 'STANDARD',
+            price: 29.99,
         },
         {
-            title: 'Morning Yoga Flow (Trainer: Elena)',
-            type: EventType.TRAINER_SESSION,
-            start: new Date(y, m, d + 1, 7, 0),
-            end: new Date(y, m, d + 1, 8, 30),
-            amount: 60.0,
-            isCompleted: false,
+            name: 'PREMIUM',
+            price: 59.99,
         },
         {
-            title: 'Powerlifting Group (Trainer: Chris)',
-            type: EventType.TRAINER_SESSION,
-            start: new Date(y, m, d, 17, 0),
-            end: new Date(y, m, d, 18, 30),
-            amount: 80.0,
-            isCompleted: false,
-        },
-        {
-            title: 'Bodybuilding 101 (Trainer: Mike)',
-            type: EventType.TRAINER_SESSION,
-            start: new Date(y, m, d + 2, 10, 0),
-            end: new Date(y, m, d + 2, 11, 0),
-            amount: 45.0,
-            isCompleted: false,
+            name: 'VIP',
+            price: 99.99,
         },
     ];
 
-    console.log('Start seeding...');
+    console.log('--- Start seeding plans ---');
 
-    for (const event of mockEvents) {
-        await prisma.event.create({
-            data: event,
+    for (const plan of plans) {
+        const result = await prisma.plan.upsert({
+            where: { name: plan.name },
+            update: {
+                price: plan.price, // Updates price if the plan already exists
+            },
+            create: plan,
         });
+        console.log(`Seeded plan: ${result.name}`);
     }
 
-    console.log('Seeding finished!');
+    console.log('--- Seeding finished! ---');
 }
 
 main()

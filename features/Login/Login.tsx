@@ -22,6 +22,15 @@ type Inputs = {
 export default function Login() {
     const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
+    const handleSignUp = async () => {
+        await authClient.signUp.email({
+            name: 'Vladyslav Boiko',
+            email: 'bojko.vladislav16@gmail.com',
+            password: 'Vlad16092005',
+            callbackURL: '/dashboard',
+        });
+    };
+
     const {
         control,
         handleSubmit,
@@ -129,6 +138,18 @@ export default function Login() {
                     Sign in
                 </Button>
             </form>
+            <Button
+                type='submit'
+                fullWidth
+                mt='xl'
+                size='md'
+                loading={isLoading}
+                variant='filled'
+                color='blue'
+                onClick={handleSignUp}
+            >
+                Sign up
+            </Button>
         </Paper>
     );
 }
