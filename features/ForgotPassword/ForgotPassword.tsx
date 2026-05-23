@@ -16,7 +16,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { IconArrowLeft } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Notification } from '@/components/Notification';
+import { FormNotification } from '@/components/FormNotification';
 
 export default function ForgotPassword() {
     type Inputs = {
@@ -102,7 +102,10 @@ export default function ForgotPassword() {
                     />
 
                     {successMessage && (
-                        <Notification type='success' message={successMessage} />
+                        <FormNotification
+                            type='success'
+                            message={successMessage}
+                        />
                     )}
 
                     <Group justify='space-between' mt='xl'>

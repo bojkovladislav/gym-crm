@@ -1,9 +1,14 @@
 import { getUserRoleAction } from '@/actions/user.action';
 import { UserRole } from '@/app/generated/prisma';
+import { Unauthorized } from '@/components/Unathorized';
 import { Schedule } from '@/features/Schedule';
 
 export default async function SchedulePage() {
-    const userRole = await getUserRoleAction();
+    const [role, error] = await getUserRoleAction();
 
-    return <Schedule readOnly={userRole.data === UserRole.TRAINER} />;
+    if (error || !role) {
+        return <Unauthorized />;
+    }
+
+    return <Schedule readOnly={role === UserRole.TRAINER} />;
 }

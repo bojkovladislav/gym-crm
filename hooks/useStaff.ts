@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { StaffMember } from '@/features/Staff/Staff';
-import { updateUser } from '@/actions/user.action';
-import { deleteUser } from '@/services/user.service';
+import { removeUser, updateUser } from '@/actions/user.action';
 import { createStaffMember } from '@/actions/staff.action';
+import { handleResponse } from '@/lib/handle-response';
 
 export const useStaff = () => {
     const [staff, setStaff] = useState<StaffMember[]>([]);
@@ -22,18 +22,45 @@ export const useStaff = () => {
     };
 
     const addNewStaff = async (data: StaffMember) => {
-        await createStaffMember(data);
-        await fetchStaff();
+        const response = await createStaffMember(data);
+
+        handleResponse(response, {
+            successMessage: 'Staff member added successfully!',
+            onSuccess: async () => {
+                await fetchStaff();
+            },
+            onError: (errorMessage) => {
+                console.error('Staff member creating rejected:', errorMessage);
+            },
+        });
     };
 
     const editStaff = async (id: string, data: StaffMember) => {
-        await updateUser(id, data);
-        await fetchStaff();
+        const response = await updateUser(id, data);
+
+        handleResponse(response, {
+            successMessage: 'Staff member updated successfully!',
+            onSuccess: async () => {
+                await fetchStaff();
+            },
+            onError: (errorMessage) => {
+                console.error('Form submission rejected:', errorMessage);
+            },
+        });
     };
 
     const deleteStaff = async (id: string) => {
-        await deleteUser(id);
-        await fetchStaff();
+        const response = await removeUser(id);
+
+        handleResponse(response, {
+            successMessage: 'Staff member deleted successfully.',
+            onSuccess: async () => {
+                await fetchStaff();
+            },
+            onError: (errorMessage) => {
+                console.error('Staff member deletion rejected:', errorMessage);
+            },
+        });
     };
 
     useEffect(() => {

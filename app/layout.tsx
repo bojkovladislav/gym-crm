@@ -1,6 +1,8 @@
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 import './globals.css';
 import { ColorSchemeScript, MantineProvider, createTheme } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 
 const theme = createTheme({
     components: {
@@ -41,7 +43,11 @@ export default function RootLayout({
                 <ColorSchemeScript />
             </head>
             <body>
-                <MantineProvider theme={theme}>{children}</MantineProvider>
+                <MantineProvider theme={theme}>
+                    <Notifications />
+
+                    {children}
+                </MantineProvider>
             </body>
         </html>
     );

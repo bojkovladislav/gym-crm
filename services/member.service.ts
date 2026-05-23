@@ -12,7 +12,6 @@ export async function editMember(
         data: { ...updatedData },
     });
 
-    console.log('Member updated successfully!', updatedMember);
     return updatedMember;
 }
 

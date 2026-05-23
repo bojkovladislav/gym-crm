@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { keyFobIdGenerator } from '@/helpers/keyFobIdGenerator';
 import { formatDateString } from '@/helpers/formatters';
 import {
     updateMember,
     removeMember,
     getActiveTrainersAction,
+    memberCheckInAction,
 } from '@/actions/member.action';
 import { Member, Plan } from '@/features/Members/Members';
-import { memberCheckIn } from '@/services/member.service';
+import { handleResponse } from '@/lib/handle-response';
 
 export const useMembers = () => {
     const [members, setMembers] = useState<Member[]>([]);
@@ -54,17 +54,34 @@ export const useMembers = () => {
         }
     };
 
-    const checkIn = async (keyFobId: string) => {
-        await memberCheckIn(keyFobId);
-        await fetchInitialData();
+    const checkIn = async (memberId: string) => {
+        const response = await memberCheckInAction(memberId);
+
+        handleResponse(response, {
+            successMessage: 'Member checked in successfully!',
+            onSuccess: async () => {
+                await fetchInitialData();
+            },
+            onError: (errorMessage) => {
+                console.error('Member check in rejected:', errorMessage);
+            },
+        });
     };
 
     const getTrainers = async () => {
         const response = await getActiveTrainersAction();
+        const [data] = response;
 
-        if (response && response.data) {
-            setActiveTrainers(response.data);
-        }
+        handleResponse(response, {
+            onSuccess: () => {
+                if (data !== null) {
+                    setActiveTrainers(data);
+                }
+            },
+            onError: (errorMessage) => {
+                console.error('Trainers fetch rejected:', errorMessage);
+            },
+        });
     };
 
     const addNewMember = async (data: Member) => {
@@ -78,13 +95,34 @@ export const useMembers = () => {
     };
 
     const editMember = async (id: string, data: Member) => {
-        await updateMember(id, { ...data, dob: new Date(data.dob) });
-        await fetchInitialData();
+        const response = await updateMember(id, {
+            ...data,
+            dob: new Date(data.dob),
+        });
+
+        handleResponse(response, {
+            successMessage: 'Member edited successfully!',
+            onSuccess: async () => {
+                await fetchInitialData();
+            },
+            onError: (errorMessage) => {
+                console.error('Member edit rejected:', errorMessage);
+            },
+        });
     };
 
     const deleteMember = async (id: string) => {
-        await removeMember(id);
-        await fetchInitialData();
+        const response = await removeMember(id);
+
+        handleResponse(response, {
+            successMessage: 'Member deleted successfully!',
+            onSuccess: async () => {
+                await fetchInitialData();
+            },
+            onError: (errorMessage) => {
+                console.error('Member deletion rejected:', errorMessage);
+            },
+        });
     };
 
     useEffect(() => {

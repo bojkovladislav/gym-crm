@@ -1,9 +1,14 @@
 import { getUserRoleAction } from '@/actions/user.action';
 import { UserRole } from '@/app/generated/prisma';
+import { Unauthorized } from '@/components/Unathorized';
 import { EquipmentLog } from '@/features/EquipmentLog';
 
 export default async function EquipmentPage() {
-    const userRole = await getUserRoleAction();
+    const [role, error] = await getUserRoleAction();
 
-    return <EquipmentLog readOnly={userRole.data === UserRole.TRAINER} />;
+    if (error || !role) {
+        return <Unauthorized />;
+    }
+
+    return <EquipmentLog readOnly={role === UserRole.TRAINER} />;
 }

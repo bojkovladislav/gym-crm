@@ -1,17 +1,17 @@
 import { getUserRoleAction } from '@/actions/user.action';
 import { LayoutShell } from '@/components/LayoutShell';
-import { UserRole } from '../generated/prisma';
+import { Unauthorized } from '@/components/Unathorized';
 
 export default async function MainLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const userRole = await getUserRoleAction();
+    const [role, error] = await getUserRoleAction();
 
-    return (
-        <LayoutShell userRole={userRole.data as UserRole}>
-            {children}
-        </LayoutShell>
-    );
+    if (error || !role) {
+        return <Unauthorized />;
+    }
+
+    return <LayoutShell userRole={role}>{children}</LayoutShell>;
 }

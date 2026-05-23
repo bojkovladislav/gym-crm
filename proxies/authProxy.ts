@@ -17,3 +17,6 @@ export function authProxy(request: NextRequest) {
 
     return NextResponse.next();
 }
+
+// Notifications:
+//

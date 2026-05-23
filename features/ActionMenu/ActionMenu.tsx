@@ -9,6 +9,7 @@ import ActionForm, {
 import { getUserRoleAction } from '@/actions/user.action';
 import { UserRole } from '@/app/generated/prisma';
 import { Modal } from '@/components/Modal';
+import { Unauthorized } from '@/components/Unathorized';
 
 type SpecialActionType = 'edit' | 'delete';
 
@@ -83,9 +84,13 @@ export default function ActionMenu<T extends { id: string; name: string }>({
     useEffect(() => {
         async function getUserRole() {
             try {
-                const role = await getUserRoleAction();
+                const [role, error] = await getUserRoleAction();
 
-                setUserRole(role.data as UserRole);
+                if (error || !role) {
+                    return <Unauthorized />;
+                }
+
+                setUserRole(role);
             } catch (error) {
                 throw new Error('Failed to get User Role!');
             }

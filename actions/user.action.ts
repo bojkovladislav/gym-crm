@@ -1,53 +1,33 @@
 'use server';
 
 import { UserRole } from '@/app/generated/prisma';
+import { createSafeAction } from '@/helpers/createSafeAction';
 import { getSessionOnServer } from '@/lib/auth-server';
 import { deleteUser, editUser, getUserRoleById } from '@/services/user.service';
 
 export async function getUserRoleAction() {
-    const session = await getSessionOnServer();
+    return createSafeAction(async () => {
+        const session = await getSessionOnServer();
 
-    if (!session?.user?.id) {
-        throw new Error('Unauthorized! The session has expired!');
-    }
+        if (!session?.user?.id) {
+            throw new Error('Unauthorized! The session has expired!');
+        }
 
-    try {
-        const userRole = await getUserRoleById(session.user.id);
-
-        return { success: true, data: userRole };
-    } catch (error) {
-        return {
-            success: false,
-            error: 'Could not retrieve User Role.',
-        };
-    }
+        return await getUserRoleById(session.user.id);
+    }, 'Could not retrieve User Role.');
 }
 
-export async function updateUser(
+export const updateUser = async (
     userId: string,
     updatedData: { name: string; email: string; role: UserRole },
-) {
-    try {
-        const user = await editUser(userId, updatedData);
+) =>
+    await createSafeAction(
+        () => editUser(userId, updatedData),
+        'Could not update user in the database.',
+    );
 
-        return { success: true, data: user };
-    } catch (error) {
-        return {
-            success: false,
-            error: 'Could not update user in the database.',
-        };
-    }
-}
-
-export async function removeUser(userId: string) {
-    try {
-        const deletedUser = await deleteUser(userId);
-
-        return { success: true, data: deletedUser };
-    } catch (error) {
-        return {
-            success: false,
-            error: 'Could not delete user.',
-        };
-    }
-}
+export const removeUser = async (userId: string) =>
+    await createSafeAction(
+        () => deleteUser(userId),
+        'Could not delete user from the database.',
+    );

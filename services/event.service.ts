@@ -1,5 +1,3 @@
-'use server';
-
 import { EventType, MembershipPlan, UserRole } from '@/app/generated/prisma';
 import { AppointmentFormValues } from '@/features/MyClients/CreateAppointmentModal';
 import prisma from '@/lib/prisma';

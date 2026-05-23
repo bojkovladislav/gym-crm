@@ -1,6 +1,6 @@
 'use client';
 
-import { Notification } from '@/components/Notification';
+import { FormNotification } from '@/components/FormNotification';
 import { authClient } from '@/lib/auth-client';
 import {
     Box,
@@ -156,7 +156,7 @@ export default function ResetPassword({ token }: Props) {
                             />
 
                             {errorMessage && (
-                                <Notification
+                                <FormNotification
                                     type='fail'
                                     message={errorMessage}
                                 />

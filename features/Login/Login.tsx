@@ -7,12 +7,14 @@ import {
     Paper,
     Group,
     Button,
+    Loader,
+    Text,
 } from '@mantine/core';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
-import { Notification } from '@/components/Notification';
+import { FormNotification } from '@/components/FormNotification';
 
 type Inputs = {
     email: string;
@@ -22,20 +24,11 @@ type Inputs = {
 export default function Login() {
     const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
-    const handleSignUp = async () => {
-        await authClient.signUp.email({
-            name: 'Vladyslav Boiko',
-            email: 'bojko.vladislav16@gmail.com',
-            password: 'Vlad16092005',
-            callbackURL: '/dashboard',
-        });
-    };
-
     const {
         control,
         handleSubmit,
         watch,
-        formState: { errors, isLoading },
+        formState: { errors, isSubmitting },
     } = useForm<Inputs>({
         defaultValues: {
             email: '',
@@ -55,6 +48,8 @@ export default function Login() {
                 },
             );
 
+            console.log(incomingData);
+
             if (error) {
                 console.error('Login failed:', error);
 
@@ -65,7 +60,6 @@ export default function Login() {
         } catch (err) {
             console.error('Unexpected error', err);
             setErrorMessage('Unexpected error');
-        } finally {
         }
     };
 
@@ -110,7 +104,7 @@ export default function Login() {
                 />
 
                 {errorMessage && (
-                    <Notification type='fail' message={errorMessage} />
+                    <FormNotification type='fail' message={errorMessage} />
                 )}
 
                 <Group justify='flex-end' mt='md'>
@@ -131,25 +125,13 @@ export default function Login() {
                     fullWidth
                     mt='xl'
                     size='md'
-                    loading={isLoading}
+                    loading={isSubmitting}
                     variant='filled'
                     color='blue'
                 >
-                    Sign in
+                    Sign In
                 </Button>
             </form>
-            <Button
-                type='submit'
-                fullWidth
-                mt='xl'
-                size='md'
-                loading={isLoading}
-                variant='filled'
-                color='blue'
-                onClick={handleSignUp}
-            >
-                Sign up
-            </Button>
         </Paper>
     );
 }

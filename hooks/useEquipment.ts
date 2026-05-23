@@ -13,6 +13,7 @@ import {
 } from '@/features/EquipmentLog/EquipmentLog';
 import { EquipmentStatsData } from '@/features/EquipmentLog/EquipmentStats';
 import { EquipmentCategory } from '@/app/generated/prisma';
+import { handleResponse } from '@/lib/handle-response';
 
 export const useEquipment = () => {
     const [equipment, setEquipment] = useState<Equipment[]>([]);
@@ -20,15 +21,17 @@ export const useEquipment = () => {
     const [loading, setLoading] = useState(false);
 
     const fetchEquipmentStats = async () => {
-        try {
-            const response = await getEquipmentStatsAction();
+        const response = await getEquipmentStatsAction();
+        const [data] = response;
 
-            if (response.success && response.data) {
-                setStats(response.data);
-            }
-        } catch (error) {
-            console.error('Failed to fetch equipment:', error);
-        }
+        handleResponse(response, {
+            onSuccess: () => {
+                setStats(data);
+            },
+            onError: (errorMessage) => {
+                console.error('Equipment stats fetch rejected:', errorMessage);
+            },
+        });
     };
 
     const fetchEquipment = async (filters: {
@@ -36,90 +39,103 @@ export const useEquipment = () => {
         category?: EquipmentCategory;
         status?: string;
     }) => {
-        try {
-            setLoading(true);
-            const response = await getEquipmentAction(filters);
+        setLoading(true);
 
-            setEquipment(response.data ?? []);
-            fetchEquipmentStats();
-        } catch (error) {
-            console.error('Failed to fetch equipment:', error);
-        } finally {
-            setLoading(false);
-        }
+        const response = await getEquipmentAction(filters);
+        const [data] = response;
+
+        handleResponse(response, {
+            onSuccess: () => {
+                if (data !== null) {
+                    setEquipment(data);
+                    fetchEquipmentStats();
+                }
+            },
+            onError: (errorMessage) => {
+                console.error('Equipment fetch rejected:', errorMessage);
+            },
+        });
+
+        setLoading(false);
     };
 
     const addNewEquipment = async (
         data: Omit<Equipment, 'id' | 'createdAt' | 'updatedAt'>,
     ) => {
-        try {
-            setLoading(true);
-            const result = await createEquipmentAction(
-                data.name,
-                data.category,
-                data.serialNumber || '',
-                data.location || '',
-                data.status,
-            );
+        setLoading(true);
 
-            if (!result.success) throw new Error(result.error);
+        const response = await createEquipmentAction(
+            data.name,
+            data.category,
+            data.serialNumber || '',
+            data.location || '',
+            data.status,
+        );
 
-            fetchEquipment({});
+        handleResponse(response, {
+            successMessage: 'New Equipment added successfully!',
+            onSuccess: async () => {
+                await fetchEquipment({});
+            },
+            onError: (errorMessage) => {
+                console.error('New Equipment creation rejected:', errorMessage);
+            },
+        });
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-            throw error;
-        } finally {
-            setLoading(false);
-        }
+        setLoading(false);
     };
 
     const editEquipment = async (id: string, data: Equipment) => {
-        try {
-            setLoading(true);
-            const result = await editEquipmentAction(id, data);
+        setLoading(true);
 
-            if (!result.success) throw new Error(result.error);
+        const response = await editEquipmentAction(id, data);
 
-            fetchEquipment({});
+        handleResponse(response, {
+            successMessage: 'Equipment edited successfully!',
+            onSuccess: async () => {
+                fetchEquipment({});
+            },
+            onError: (errorMessage) => {
+                console.error('Equipment edit rejected:', errorMessage);
+            },
+        });
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-            console.error('Edit failed:', error.message);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
+        setLoading(false);
     };
 
     const requestMaintenance = async (
         id: string,
         data: MaintenanceRequestData,
     ) => {
-        try {
-            const result = await requestMaintenanceAction(id, data);
+        const response = await requestMaintenanceAction(id, data);
 
-            if (!result.success) throw new Error(result.error);
-
-            await fetchEquipment({});
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-            console.error('Maintenance request failed:', error.message);
-            throw error;
-        }
+        handleResponse(response, {
+            successMessage: 'Maintenance Request sent successfully!',
+            onSuccess: async () => {
+                await fetchEquipment({});
+            },
+            onError: (errorMessage) => {
+                console.error('Maintenance request rejected:', errorMessage);
+            },
+        });
     };
 
     const removeEquipment = async (id: string) => {
-        try {
-            setLoading(true);
-            await deleteEquipmentAction(id);
+        setLoading(true);
 
-            fetchEquipment({});
-        } catch (error) {
-            console.error('Delete failed:', error);
-        } finally {
-            setLoading(false);
-        }
+        const response = await deleteEquipmentAction(id);
+
+        handleResponse(response, {
+            successMessage: 'Equipment deleted successfully',
+            onSuccess: async () => {
+                await fetchEquipment({});
+            },
+            onError: (errorMessage) => {
+                console.error('Equipment deletion rejected', errorMessage);
+            },
+        });
+
+        setLoading(false);
     };
 
     useEffect(() => {

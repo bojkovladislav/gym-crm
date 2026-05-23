@@ -1,8 +1,11 @@
+'use server';
+
 import { EquipmentCategory, EquipmentStatus } from '@/app/generated/prisma';
 import {
     Equipment,
     MaintenanceRequestData,
 } from '@/features/EquipmentLog/EquipmentLog';
+import { createSafeAction } from '@/helpers/createSafeAction';
 import {
     getEquipmentStats,
     getFilteredEquipment,
@@ -12,87 +15,51 @@ import {
     requestMaintenance,
 } from '@/services/equipment.service';
 
-export async function getEquipmentStatsAction() {
-    try {
-        const data = await getEquipmentStats();
+export const getEquipmentStatsAction = async () =>
+    await createSafeAction(
+        getEquipmentStats,
+        'Could not load equipment stats from database.',
+    );
 
-        return { success: true, data };
-    } catch (error) {
-        return { success: false, error: 'Failed to load equipment data.' };
-    }
-}
-
-export async function getEquipmentAction(filters: {
+export const getEquipmentAction = async (filters: {
     search?: string;
     category?: EquipmentCategory;
     status?: string;
-}) {
-    try {
-        const data = await getFilteredEquipment(filters);
+}) =>
+    await createSafeAction(
+        () => getFilteredEquipment(filters),
+        'Could not fetch equipment from database.',
+    );
 
-        return { success: true, data };
-    } catch (error) {
-        return { success: false, error: 'Failed to get Equipment.' };
-    }
-}
-
-export async function createEquipmentAction(
+export const createEquipmentAction = async (
     name: string,
     category: EquipmentCategory,
     serialNumber?: string,
     location?: string,
     status?: EquipmentStatus,
-) {
-    try {
-        const result = await createEquipment(
-            name,
-            category,
-            serialNumber,
-            location,
-            status,
-        );
+) =>
+    await createSafeAction(
+        () => createEquipment(name, category, serialNumber, location, status),
+        'Could not add new equipment to the database.',
+    );
 
-        return {
-            success: true,
-            data: result,
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: 'Failed to create equipment. Please try again.',
-        };
-    }
-}
+export const editEquipmentAction = async (id: string, data: Equipment) =>
+    await createSafeAction(
+        () => editEquipment(id, data),
+        'Could not edit equipment.',
+    );
 
-export async function editEquipmentAction(id: string, data: Equipment) {
-    try {
-        const updatedEquipment = await editEquipment(id, data);
-
-        return { success: true, data: updatedEquipment };
-    } catch (error) {
-        return { success: false, error: 'Failed to edit equipment.' };
-    }
-}
-
-export async function requestMaintenanceAction(
+export const requestMaintenanceAction = async (
     id: string,
     data: MaintenanceRequestData,
-) {
-    try {
-        const result = await requestMaintenance(id, data);
+) =>
+    await createSafeAction(
+        () => requestMaintenance(id, data),
+        'Could not request maintenance.',
+    );
 
-        return { success: true, data: result };
-    } catch (error) {
-        return { success: false, error: 'Failed to request maintenance.' };
-    }
-}
-
-export async function deleteEquipmentAction(id: string) {
-    try {
-        const deletedEquipment = await deleteEquipment(id);
-
-        return { success: true, data: deletedEquipment };
-    } catch (error) {
-        return { success: false, error: 'Failed to delete Equipment.' };
-    }
-}
+export const deleteEquipmentAction = async (id: string) =>
+    await createSafeAction(
+        () => deleteEquipment(id),
+        'Could not delete equipment from database.',
+    );

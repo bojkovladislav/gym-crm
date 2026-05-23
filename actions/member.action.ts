@@ -1,5 +1,6 @@
 'use server';
 
+import { createSafeAction } from '@/helpers/createSafeAction';
 import {
     deleteMember,
     editMember,
@@ -8,46 +9,20 @@ import {
     memberCheckIn,
 } from '@/services/member.service';
 
-export async function updateMember(
+export const updateMember = async (
     memberId: string,
     updatedData: { name?: string; email?: string; dob?: Date; planId?: string },
-) {
-    try {
-        const member = await editMember(memberId, updatedData);
+) =>
+    createSafeAction(
+        () => editMember(memberId, updatedData),
+        'Could not update member in the database.',
+    );
 
-        return { success: true, data: member };
-    } catch (error) {
-        console.error('Server action failed to update member:', error);
-
-        return {
-            success: false,
-            error: 'Could not update member in the database.',
-        };
-    }
-}
-
-export async function removeMember(memberId: string) {
-    try {
-        const deletedMember = await deleteMember(memberId);
-
-        return { success: true, data: deletedMember };
-    } catch (error) {
-        return { success: false, error: "Couldn't delete member" };
-    }
-}
-
-export async function memberCheckInAction(keyFobId: string) {
-    try {
-        const data = await memberCheckIn(keyFobId);
-
-        return { success: true, data };
-    } catch (error) {
-        return {
-            success: false,
-            error: "Couldn't initiate member access procedure",
-        };
-    }
-}
+export const removeMember = async (memberId: string) =>
+    await createSafeAction(
+        () => deleteMember(memberId),
+        'Could not delete member from database.',
+    );
 
 export async function getTrainerMembersAction(trainerId: string) {
     try {
@@ -59,12 +34,14 @@ export async function getTrainerMembersAction(trainerId: string) {
     }
 }
 
-export async function getActiveTrainersAction() {
-    try {
-        const trainers = await getActiveTrainers();
+export const getActiveTrainersAction = async () =>
+    await createSafeAction(
+        getActiveTrainers,
+        'Could not fetch all active trainers from database.',
+    );
 
-        return { success: true, data: trainers };
-    } catch (error) {
-        return { success: false, error: 'Failed to get all active trainers.' };
-    }
-}
+export const memberCheckInAction = async (memberId: string) =>
+    createSafeAction(
+        () => memberCheckIn(memberId),
+        'Could not initiate member check in.',
+    );

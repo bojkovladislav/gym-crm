@@ -16,12 +16,10 @@ export async function editUser(
     userId: string,
     updatedData: { name: string; email: string; role: UserRole },
 ) {
-    const updatedUser = await prisma.user.update({
+    return await prisma.user.update({
         where: { id: userId },
         data: { ...updatedData },
     });
-
-    console.log('User updated successfully!', updatedUser);
 }
 
 export async function deleteUser(userId: string) {

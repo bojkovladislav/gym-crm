@@ -1,11 +1,12 @@
 'use server';
 
 import { StaffMember } from '@/features/Staff/Staff';
+import { createSafeAction } from '@/helpers/createSafeAction';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
 export async function createStaffMember(data: StaffMember) {
-    try {
+    return createSafeAction(async () => {
         const { email, password, name, role, baseSalary } = data;
 
         const user = await auth.api.signUpEmail({
@@ -16,8 +17,6 @@ export async function createStaffMember(data: StaffMember) {
             },
         });
 
-        console.log(user);
-
         if (!user) throw new Error('Failed to create new member.');
 
         await prisma.user.update({
@@ -25,8 +24,6 @@ export async function createStaffMember(data: StaffMember) {
             data: { role, baseSalary },
         });
 
-        return { success: true, data: user };
-    } catch (error) {
-        return { success: false, error: 'Staff creating error' };
-    }
+        return user;
+    }, 'Could not create new staff member.');
 }
