@@ -24,15 +24,11 @@ export const removeMember = async (memberId: string) =>
         'Could not delete member from database.',
     );
 
-export async function getTrainerMembersAction(trainerId: string) {
-    try {
-        const members = await getTrainerMembers(trainerId);
-
-        return { success: true, data: members };
-    } catch (error) {
-        return { success: false, error: 'Failed to get trainer members.' };
-    }
-}
+export const getTrainerMembersAction = async (trainerId: string) =>
+    await createSafeAction(
+        () => getTrainerMembers(trainerId),
+        'Could not fetch trainer members from database.',
+    );
 
 export const getActiveTrainersAction = async () =>
     await createSafeAction(
