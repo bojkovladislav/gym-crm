@@ -1,48 +1,29 @@
 'use server';
 
 import { AppointmentFormValues } from '@/features/MyClients/CreateAppointmentModal';
+import { createSafeAction } from '@/helpers/createSafeAction';
 import {
     completeEvent,
     createAppointmentEvent,
     getEvents,
 } from '@/services/event.service';
 
-export async function getEventsAction() {
-    try {
-        const events = await getEvents();
+export const getEventsAction = async () =>
+    await createSafeAction(getEvents, 'Could not fetch events.');
 
-        return { success: true, data: events };
-    } catch (error) {
-        return { success: false, error: 'Failed to fetch events.' };
-    }
-}
+export const completeEventAction = async (eventId: string) =>
+    await createSafeAction(
+        () => completeEvent(eventId),
+        'Could not complete event.',
+    );
 
-export async function completeEventAction(eventId: string) {
-    try {
-        const data = await completeEvent(eventId);
-
-        return { success: true, data };
-    } catch (error) {
-        return { success: false, error: 'Failed to get complete event.' };
-    }
-}
-
-export async function createAppointmentEventAction(
+export const createAppointmentEventAction = async (
     trainerId: string,
     memberId: string,
     memberName: string,
     data: AppointmentFormValues,
-) {
-    try {
-        const newEvent = await createAppointmentEvent(
-            trainerId,
-            memberId,
-            memberName,
-            data,
-        );
-
-        return { success: true, data: newEvent };
-    } catch (error) {
-        return { success: false, error: 'Failed to create an appointment.' };
-    }
-}
+) =>
+    await createSafeAction(
+        () => createAppointmentEvent(trainerId, memberId, memberName, data),
+        'Could not create an appointment.',
+    );
