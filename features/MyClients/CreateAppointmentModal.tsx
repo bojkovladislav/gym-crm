@@ -16,6 +16,7 @@ import { DateInput, TimeInput } from '@mantine/dates';
 import { IconCalendarPlus, IconClock, IconTag } from '@tabler/icons-react';
 import { useForm, Controller } from 'react-hook-form';
 import { createAppointmentEventAction } from '@/actions/event.action';
+import { handleResponse } from '@/lib/handle-response';
 
 export interface AppointmentFormValues {
     title: string;
@@ -49,21 +50,23 @@ export function CreateAppointmentModal({
     });
 
     const onSubmit = async (data: AppointmentFormValues) => {
-        try {
-            await createAppointmentEventAction(
-                trainerId,
-                clientId,
-                clientName,
-                data,
-            );
+        const response = await createAppointmentEventAction(
+            trainerId,
+            clientId,
+            clientName,
+            data,
+        );
 
-            close();
-            reset();
-        } catch (error) {
-            throw new Error(
-                'Something went wrong during appointment creation.',
-            );
-        }
+        handleResponse(response, {
+            successMessage: 'Appointment created successfully!',
+            onSuccess: () => {
+                close();
+                reset();
+            },
+            onError: (errorMessage) => {
+                console.error('Appointment creation rejected:', errorMessage);
+            },
+        });
     };
 
     return (

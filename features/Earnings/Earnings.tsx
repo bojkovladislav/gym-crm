@@ -3,6 +3,7 @@ import { PageHeader } from '@/components/PageHeader';
 import { StatisticBlocks } from '@/components/StatisticBlocks';
 import { StatisticBlockType } from '@/components/StatisticBlocks/StatisticBlocks';
 import { getSessionOnServer } from '@/lib/auth-server';
+import { handleResponse } from '@/lib/handle-response';
 import { Group, Paper, Stack, Text } from '@mantine/core';
 import { IconCash, IconChartArrows, IconUserCheck } from '@tabler/icons-react';
 
@@ -14,23 +15,22 @@ export default async function Earnings() {
     }
 
     const response = await getUserPaycheckStatsAction(session.user.id);
+    const [data] = response;
 
-    if (!response.success || !response.data) {
-        return <div>Error loading stats: {response.error}</div>;
-    }
+    handleResponse(response);
 
-    const statsData = response.data;
+    if (data === null) return;
 
     const stats: StatisticBlockType[] = [
         {
             title: 'Total Paid out',
-            value: `$${statsData.totalEarnings.toLocaleString()}`,
+            value: `$${data.totalEarnings.toLocaleString()}`,
             icon: IconCash,
             color: 'blue',
         },
         {
             title: 'Monthly Base',
-            value: `$${statsData.baseSalary.toLocaleString()}`,
+            value: `$${data.baseSalary.toLocaleString()}`,
             icon: IconChartArrows,
             color: 'grape',
         },

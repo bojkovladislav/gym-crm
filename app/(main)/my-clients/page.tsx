@@ -1,6 +1,7 @@
 import { getTrainerMembersAction } from '@/actions/member.action';
 import { MyClients } from '@/features/MyClients';
 import { getSessionOnServer } from '@/lib/auth-server';
+import { handleResponse } from '@/lib/handle-response';
 
 export default async function MyClientsPage() {
     const session = await getSessionOnServer();
@@ -9,11 +10,10 @@ export default async function MyClientsPage() {
         throw new Error('Unauthorized! The session has expired!');
     }
 
-    const { success, data } = await getTrainerMembersAction(session.user.id);
+    const response = await getTrainerMembersAction(session.user.id);
+    const [data] = response;
 
-    if (!success || !data) {
-        throw new Error('Failed to load clients');
-    }
+    handleResponse(response);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return <MyClients clients={data as any} trainerId={session.user.id} />;

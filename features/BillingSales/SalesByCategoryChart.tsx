@@ -1,6 +1,7 @@
 'use client';
 
 import { getTransactionChartDataAction } from '@/actions/transaction.action';
+import { handleResponse } from '@/lib/handle-response';
 import { Paper, Text, Group, Stack, Badge } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import {
@@ -23,15 +24,19 @@ export default function SalesByCategoryChart() {
 
     useEffect(() => {
         async function getChartData() {
-            try {
-                const data = await getTransactionChartDataAction();
+            const response = await getTransactionChartDataAction();
+            const [data] = response;
 
-                if (data.data && data.success) {
-                    setChartData(data.data);
-                }
-            } catch (error) {
-                console.error('Failed to get Transaction Chart Data!');
-            }
+            handleResponse(response, {
+                onSuccess: () => {
+                    if (data !== null) {
+                        setChartData(data);
+                    }
+                },
+                onError: (errorMessage) => {
+                    console.error('Fetch Chart Data rejected:', errorMessage);
+                },
+            });
         }
 
         getChartData();

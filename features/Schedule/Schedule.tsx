@@ -8,6 +8,7 @@ import { EventType } from '@/app/generated/prisma';
 import { useEffect, useState } from 'react';
 import { completeEventAction, getEventsAction } from '@/actions/event.action';
 import EventMenu from './EventMenu';
+import { handleResponse } from '@/lib/handle-response';
 
 export interface Event {
     id: string;
@@ -50,23 +51,33 @@ export default function Schedule({ readOnly }: Props) {
     };
 
     async function fetchEvents() {
-        try {
-            const events = await getEventsAction();
+        const response = await getEventsAction();
+        const [data] = response;
 
-            if (events.data && events.success) {
-                setEvents(events.data);
-            }
-        } catch (error) {
-            console.error('Failed to get events.');
-        }
+        handleResponse(response, {
+            onSuccess: () => {
+                if (data !== null) {
+                    setEvents(data);
+                }
+            },
+            onError: (errorMessage) => {
+                console.error('Fetch Events rejected:', errorMessage);
+            },
+        });
     }
 
     const handleCompleteEvent = async (eventId: string) => {
-        const { success } = await completeEventAction(eventId);
+        const response = await completeEventAction(eventId);
 
-        if (success) {
-            await fetchEvents();
-        }
+        handleResponse(response, {
+            successMessage: 'Event completed successfully!',
+            onSuccess: async () => {
+                await fetchEvents();
+            },
+            onError: (errorMessage) => {
+                console.error('Event completion rejected:', errorMessage);
+            },
+        });
     };
 
     useEffect(() => {

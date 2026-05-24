@@ -5,6 +5,7 @@ import BillingDataTable from './BillingDataTable';
 import SalesByCategoryChart from './SalesByCategoryChart';
 import { TransactionType } from '@/app/generated/prisma';
 import { getBillingDataAction } from '@/actions/transaction.action';
+import { handleResponse } from '@/lib/handle-response';
 
 export interface Transaction {
     id: string;
@@ -19,19 +20,18 @@ export interface Transaction {
 export default async function BillingSales() {
     const response = await getBillingDataAction();
 
-    if (!response.data || !response.success || !response) {
-        return (
-            <div className='p-10 text-center'>
-                <h2 className='text-red-500'>Unable to load billing data</h2>
-                <p>
-                    Please try refreshing the page or contact support if the
-                    issue persists.
-                </p>
-            </div>
-        );
-    }
+    handleResponse(response, {
+        onError: (errorMessage) => {
+            console.error(
+                'Fetch of billing information rejected:',
+                errorMessage,
+            );
+        },
+    });
 
-    const { stats, transactions } = response.data;
+    const [data] = response;
+
+    if (data === null) return;
 
     return (
         <Stack>
@@ -41,11 +41,11 @@ export default async function BillingSales() {
                 formTitle='Log New Gym Equipment'
             />
 
-            <BillingStats stats={stats} />
+            <BillingStats stats={data.stats} />
 
             <Group align='stretch'>
                 <Box style={{ flex: 1 }}>
-                    <BillingDataTable transactions={transactions} />
+                    <BillingDataTable transactions={data.transactions} />
                 </Box>
 
                 <SalesByCategoryChart />
