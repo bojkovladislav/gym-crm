@@ -1,7 +1,60 @@
 'use server';
 
 import { UserRole } from '@/app/generated/prisma';
+import { Member } from '@/features/Members/Members';
+import { keyFobIdGenerator } from '@/helpers/keyFobIdGenerator';
 import prisma from '@/lib/prisma';
+
+export async function getMembers() {
+    return await prisma.member.findMany({ orderBy: { joinedAt: 'desc' } });
+}
+
+export async function createMember(newMember: Member) {
+    const { name, email, phoneNumber, planId, dob } = newMember;
+
+    return await prisma.$transaction(async (tx) => {
+        const currentPlan = await prisma.plan.findUnique({
+            where: { id: planId },
+            select: { name: true, price: true },
+        });
+
+        if (!currentPlan) {
+            throw new Error('Plan not found');
+        }
+
+        const member = await tx.member.create({
+            data: {
+                name,
+                email,
+                phoneNumber,
+                planId,
+                dob: new Date(dob),
+                status: 'PENDING_ACTIVATION',
+                visits: 0,
+                joinedAt: new Date(),
+            },
+        });
+
+        const updatedMember = await tx.member.update({
+            where: { id: member.id },
+            data: {
+                keyFobId: keyFobIdGenerator(name, dob, member.id),
+            },
+        });
+
+        await tx.transaction.create({
+            data: {
+                amount: currentPlan.price,
+                type: 'INCOME',
+                description: `${currentPlan.name} Subscription - ${member.name}`,
+                category: 'Subscription',
+                memberId: member.id,
+            },
+        });
+
+        return updatedMember;
+    });
+}
 
 export async function editMember(
     memberId: string,

@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { formatDateString } from '@/helpers/formatters';
 import {
     updateMember,
     removeMember,
     getActiveTrainersAction,
     memberCheckInAction,
+    getMembersAction,
+    createMemberAction,
 } from '@/actions/member.action';
 import { Member, Plan } from '@/features/Members/Members';
 import { handleResponse } from '@/lib/handle-response';
+import { getPlansAction } from '@/actions/plans.action';
 
 export const useMembers = () => {
     const [members, setMembers] = useState<Member[]>([]);
@@ -22,36 +24,60 @@ export const useMembers = () => {
     const [loading, setLoading] = useState(false);
 
     const fetchInitialData = async () => {
-        try {
-            setLoading(true);
-            const [memberRes, planRes] = await Promise.all([
-                axios.get('/api/members'),
-                axios.get('/api/plans'),
-            ]);
+        setLoading(true);
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const planMap = planRes.data.reduce((acc: any, plan: Plan) => {
-                acc[plan.id] = plan.name;
-                return acc;
-            }, {});
+        const [membersResponse, plansResponse] = await Promise.all([
+            getMembersAction(),
+            getPlansAction(),
+        ]);
 
-            setMembers(
-                memberRes.data.map((m: Member) => ({
-                    ...m,
-                    joinedAt: formatDateString(m.joinedAt),
-                    plan: planMap[m.planId],
-                })),
-            );
+        setLoading(false);
 
-            setPlans(
-                planRes.data.map((p: Plan) => ({
-                    value: p.id,
-                    label: `${p.name} (${p.price.toFixed(2)})`,
-                })),
-            );
-        } finally {
-            setLoading(false);
+        const [membersData, membersError] = membersResponse;
+        const [plansData, plansError] = plansResponse;
+
+        handleResponse(membersResponse, {
+            onError: (errorMessage) => {
+                console.error('Fetch members rejected:', errorMessage);
+            },
+        });
+
+        handleResponse(plansResponse, {
+            onError: (errorMessage) => {
+                console.error('Fetch plans rejected:', errorMessage);
+            },
+        });
+
+        if (
+            membersError ||
+            plansError ||
+            membersData === null ||
+            plansData === null
+        ) {
+            return;
         }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const planMap = plansData.reduce((acc: any, plan: Plan) => {
+            acc[plan.id] = plan.name;
+            return acc;
+        }, {});
+
+        setMembers(
+            membersData.map((member) => ({
+                ...member,
+                dob: formatDateString(member.dob),
+                joinedAt: formatDateString(member.joinedAt),
+                plan: planMap[member.planId],
+            })),
+        );
+
+        setPlans(
+            plansData.map((p: Plan) => ({
+                value: p.id,
+                label: `${p.name} (${p.price.toFixed(2)})`,
+            })),
+        );
     };
 
     const checkIn = async (memberId: string) => {
@@ -84,14 +110,18 @@ export const useMembers = () => {
         });
     };
 
-    const addNewMember = async (data: Member) => {
-        const newMember = {
-            ...data,
-            dob: new Date(data.dob),
-        };
+    const addNewMember = async (newMember: Member) => {
+        const response = await createMemberAction(newMember);
 
-        await axios.post('/api/members/', newMember);
-        await fetchInitialData();
+        handleResponse(response, {
+            successMessage: 'New member created successfully!',
+            onSuccess: async () => {
+                await fetchInitialData();
+            },
+            onError: (errorMessage) => {
+                console.error('New member creation rejected:', errorMessage);
+            },
+        });
     };
 
     const editMember = async (id: string, data: Member) => {
@@ -127,8 +157,8 @@ export const useMembers = () => {
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
-        getTrainers();
         fetchInitialData();
+        getTrainers();
     }, []);
 
     return {

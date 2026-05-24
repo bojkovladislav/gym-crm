@@ -48,8 +48,6 @@ export default function Login() {
                 },
             );
 
-            console.log(incomingData);
-
             if (error) {
                 console.error('Login failed:', error);
 

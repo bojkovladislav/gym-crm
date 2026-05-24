@@ -15,8 +15,8 @@ export interface Member {
     dob: string;
     name: string;
     assignedTrainerId: string | null;
-    subscriptionStartDate: Date;
-    subscriptionEndDate: Date;
+    subscriptionStartDate: Date | null;
+    subscriptionEndDate: Date | null;
     email: string;
     phoneNumber: string;
     planId: string;

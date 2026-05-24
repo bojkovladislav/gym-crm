@@ -23,7 +23,6 @@
         "@prisma/adapter-pg": "^7.8.0",
         "@prisma/client": "^7.8.0",
         "@tabler/icons-react": "^3.41.1",
-        "axios": "^1.16.0",
         "bcrypt": "^6.0.0",
         "better-auth": "^1.6.9",
         "next": "16.2.4",

@@ -73,8 +73,6 @@ export default function ActionForm<T extends FieldValues>({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }, {} as any) as T;
 
-    console.log(defaultValues);
-
     const {
         control,
         reset,

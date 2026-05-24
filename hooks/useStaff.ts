@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { StaffMember } from '@/features/Staff/Staff';
-import { removeUser, updateUser } from '@/actions/user.action';
+import { getUsersAction, removeUser, updateUser } from '@/actions/user.action';
 import { createStaffMember } from '@/actions/staff.action';
 import { handleResponse } from '@/lib/handle-response';
 
@@ -10,15 +9,30 @@ export const useStaff = () => {
     const [loading, setLoading] = useState(false);
 
     const fetchStaff = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get('/api/staff');
-            setStaff(response.data);
-        } catch (error) {
-            console.error('Failed to fetch staff:', error);
-        } finally {
-            setLoading(false);
-        }
+        setLoading(true);
+
+        const response = await getUsersAction();
+        const [data] = response;
+
+        handleResponse(response, {
+            onSuccess: () => {
+                if (data !== null) {
+                    setStaff(
+                        data.map((user) => ({
+                            id: user.id,
+                            name: user.name,
+                            email: user.email,
+                            password: '',
+                            image: '',
+                            role: user.role,
+                            baseSalary: user.baseSalary || 0,
+                        })),
+                    );
+                }
+            },
+        });
+
+        setLoading(false);
     };
 
     const addNewStaff = async (data: StaffMember) => {

@@ -3,10 +3,18 @@
 import { UserRole } from '@/app/generated/prisma';
 import { createSafeAction } from '@/helpers/createSafeAction';
 import { getSessionOnServer } from '@/lib/auth-server';
-import { deleteUser, editUser, getUserRoleById } from '@/services/user.service';
+import {
+    deleteUser,
+    editUser,
+    getUserRoleById,
+    getUsers,
+} from '@/services/user.service';
 
-export async function getUserRoleAction() {
-    return createSafeAction(async () => {
+export const getUsersAction = async () =>
+    await createSafeAction(getUsers, 'Could not fetch users from database.');
+
+export const getUserRoleAction = async () =>
+    await createSafeAction(async () => {
         const session = await getSessionOnServer();
 
         if (!session?.user?.id) {
@@ -15,7 +23,6 @@ export async function getUserRoleAction() {
 
         return await getUserRoleById(session.user.id);
     }, 'Could not retrieve User Role.');
-}
 
 export const updateUser = async (
     userId: string,

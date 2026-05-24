@@ -1,13 +1,28 @@
 'use server';
 
+import { Member } from '@/features/Members/Members';
 import { createSafeAction } from '@/helpers/createSafeAction';
 import {
+    createMember,
     deleteMember,
     editMember,
     getActiveTrainers,
+    getMembers,
     getTrainerMembers,
     memberCheckIn,
 } from '@/services/member.service';
+
+export const createMemberAction = async (newMember: Member) =>
+    await createSafeAction(
+        () => createMember(newMember),
+        'Could not create a new member.',
+    );
+
+export const getMembersAction = async () =>
+    await createSafeAction(
+        getMembers,
+        'Could not fetch members from the database.',
+    );
 
 export const updateMember = async (
     memberId: string,
