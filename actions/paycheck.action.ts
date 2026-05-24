@@ -1,11 +1,8 @@
+import { createSafeAction } from '@/helpers/createSafeAction';
 import { getUserPaycheckStats } from '@/services/paycheck.service';
 
-export async function getUserPaycheckStatsAction(userId: string) {
-    try {
-        const stats = await getUserPaycheckStats(userId);
-
-        return { success: true, data: stats };
-    } catch (error) {
-        return { success: false, error: 'Failed to get user paycheck stats.' };
-    }
-}
+export const getUserPaycheckStatsAction = async (userId: string) =>
+    await createSafeAction(
+        () => getUserPaycheckStats(userId),
+        'Could not fetch user paycheck stats from database.',
+    );
