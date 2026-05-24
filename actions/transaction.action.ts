@@ -1,31 +1,22 @@
 'use server';
 
+import { createSafeAction } from '@/helpers/createSafeAction';
 import {
     getAllTransactions,
     getTransactionChartData,
     getTransactionStats,
 } from '@/services/transaction.service';
 
-export async function getBillingDataAction() {
-    try {
+export const getBillingDataAction = async () =>
+    await createSafeAction(async () => {
         const stats = await getTransactionStats();
         const transactions = await getAllTransactions();
 
-        return { success: true, data: { stats, transactions } };
-    } catch (error) {
-        return { success: false, error: 'Failed to fetch billing data.' };
-    }
-}
+        return { stats, transactions };
+    }, 'Could not fetch billing data from the database.');
 
-export async function getTransactionChartDataAction() {
-    try {
-        const data = await getTransactionChartData();
-
-        return { success: true, data };
-    } catch (error) {
-        return {
-            success: false,
-            error: 'Failed to get Transaction Chart Data.',
-        };
-    }
-}
+export const getTransactionChartDataAction = async () =>
+    await createSafeAction(
+        getTransactionChartData,
+        'Could not fetch transaction data chart from the database.',
+    );
