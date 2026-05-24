@@ -10,6 +10,7 @@ import { getUserRoleAction } from '@/actions/user.action';
 import { UserRole } from '@/app/generated/prisma';
 import { Modal } from '@/components/Modal';
 import { Unauthorized } from '@/components/Unathorized';
+import { handleResponse } from '@/lib/handle-response';
 
 type SpecialActionType = 'edit' | 'delete';
 
@@ -47,6 +48,8 @@ export default function ActionMenu<T extends { id: string; name: string }>({
 }: Props<T>) {
     const [requestForDeletion, setRequestForDeletion] = useState(false);
     const [selectedPerson, setSelectedPerson] = useState<T | null>(null);
+    const [actionPermissionLoading, setActionPermissionLoading] =
+        useState(false);
     const [userRole, setUserRole] = useState<UserRole | null>(null);
     const deleteAction = actions.find(
         (action) =>
@@ -83,28 +86,38 @@ export default function ActionMenu<T extends { id: string; name: string }>({
 
     useEffect(() => {
         async function getUserRole() {
-            try {
-                const [role, error] = await getUserRoleAction();
+            setActionPermissionLoading(true);
 
-                if (error || !role) {
-                    return <Unauthorized />;
-                }
+            const response = await getUserRoleAction();
+            const [data, error] = response;
 
-                setUserRole(role);
-            } catch (error) {
-                throw new Error('Failed to get User Role!');
+            if (error) {
+                return <Unauthorized />;
             }
+
+            handleResponse(response, {
+                onSuccess: () => {
+                    if (data !== null) {
+                        setUserRole(data);
+                    }
+                },
+                onError: (errorMessage) => {
+                    console.error('Fetch user role rejected:', errorMessage);
+                },
+            });
+
+            setActionPermissionLoading(false);
         }
 
         getUserRole();
     }, []);
 
-    if (!actionsVisible) {
-        return <Text>No Actions available</Text>;
-    }
-
     return (
         <>
+            {!actionPermissionLoading && !actionsVisible && (
+                <Text>No actions available</Text>
+            )}
+
             {deleteAction && (
                 <Modal
                     opened={requestForDeletion}
@@ -122,7 +135,7 @@ export default function ActionMenu<T extends { id: string; name: string }>({
                 </Modal>
             )}
 
-            {selectedPerson && (
+            {selectedPerson && !actionPermissionLoading && (
                 <ActionForm
                     inputs={inputs}
                     title='Edit Person'
