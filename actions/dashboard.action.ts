@@ -22,5 +22,5 @@ export const getAdminDashboardStatsAction = async () =>
 export const getTrainerDashboardStatsAction = async (trainerId: string) =>
     await createSafeAction(
         () => getTrainerDashboardStats(trainerId),
-        'Could not fetch owner dashboard stats from database.',
+        'Could not fetch trainer dashboard stats from database.',
     );
