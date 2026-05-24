@@ -16,6 +16,7 @@ import { ChartData, FinancialTrendChart } from './FinancialTrendChart';
 import { RevenueDistribution, RevenueSource } from './RevenueDistribution';
 import { PageHeader } from '@/components/PageHeader';
 import Link from 'next/link';
+import { handleResponse } from '@/lib/handle-response';
 
 interface OwnerStats {
     revenue: number;
@@ -40,13 +41,27 @@ export default function OwnerDashboard() {
 
     useEffect(() => {
         async function loadData() {
-            const res = await getOwnerDashboardStatsAction();
+            setLoading(true);
+            const response = await getOwnerDashboardStatsAction();
+            const [data] = response;
 
-            if (res.success && res.data) {
-                setStats(res.data as unknown as OwnerStats);
-            }
+            handleResponse(response, {
+                onSuccess: () => {
+                    if (data !== null) {
+                        setStats(data as unknown as OwnerStats);
+                    }
+                },
+                onError: (errorMessage) => {
+                    console.error(
+                        'Owner Dashboard Stats rejected:',
+                        errorMessage,
+                    );
+                },
+            });
+
             setLoading(false);
         }
+
         loadData();
     }, []);
 

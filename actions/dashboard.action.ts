@@ -1,46 +1,26 @@
 'use server';
 
+import { createSafeAction } from '@/helpers/createSafeAction';
 import {
     getAdminDashboardStats,
     getOwnerDashboardStats,
     getTrainerDashboardStats,
 } from '@/services/dashboard.service';
 
-export async function getOwnerDashboardStatsAction() {
-    try {
-        const data = await getOwnerDashboardStats();
+export const getOwnerDashboardStatsAction = async () =>
+    await createSafeAction(
+        getOwnerDashboardStats,
+        'Could not fetch owner dashboard stats from database.',
+    );
 
-        return { success: true, data };
-    } catch (error) {
-        return {
-            success: false,
-            error: 'Failed to fetch owner dashboard data.',
-        };
-    }
-}
+export const getAdminDashboardStatsAction = async () =>
+    await createSafeAction(
+        getAdminDashboardStats,
+        'Could not fetch admin dashboard stats from database.',
+    );
 
-export async function getAdminDashboardStatsAction() {
-    try {
-        const data = await getAdminDashboardStats();
-
-        return { success: true, data };
-    } catch (error) {
-        return {
-            success: false,
-            error: 'Failed to fetch admin dashboard data.',
-        };
-    }
-}
-
-export async function getTrainerDashboardStatsAction(trainerId: string) {
-    try {
-        const data = await getTrainerDashboardStats(trainerId);
-
-        return { success: true, data };
-    } catch (error) {
-        return {
-            success: false,
-            error: 'Failed to fetch trainer dashboard data.',
-        };
-    }
-}
+export const getTrainerDashboardStatsAction = async (trainerId: string) =>
+    await createSafeAction(
+        () => getTrainerDashboardStats(trainerId),
+        'Could not fetch owner dashboard stats from database.',
+    );

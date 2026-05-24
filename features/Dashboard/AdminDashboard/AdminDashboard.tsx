@@ -25,6 +25,7 @@ import EquipmentStatusChart from './EquipmentStatusChart';
 import OperationalActivityChart from './OperationalActivityChart';
 import { PageHeader } from '@/components/PageHeader';
 import { EquipmentStatus } from '@/app/generated/prisma';
+import { handleResponse } from '@/lib/handle-response';
 
 export interface AdminStats {
     equipmentStats: {
@@ -49,10 +50,20 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         async function loadData() {
-            const res = await getAdminDashboardStatsAction();
-            if (res.success) {
-                setStats(res.data as unknown as AdminStats);
-            }
+            setLoading(true);
+
+            const response = await getAdminDashboardStatsAction();
+            const [data] = response;
+
+            handleResponse(response, {
+                onSuccess: () => {
+                    setStats(data as unknown as AdminStats);
+                },
+                onError: (errorMessage) => {
+                    console.error('Fetch Admin Stats rejected:', errorMessage);
+                },
+            });
+
             setLoading(false);
         }
         loadData();

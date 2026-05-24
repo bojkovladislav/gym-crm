@@ -23,6 +23,7 @@ import {
 import { StatisticBlocks } from '@/components/StatisticBlocks';
 import { getTrainerDashboardStatsAction } from '@/actions/dashboard.action';
 import { PageHeader } from '@/components/PageHeader';
+import { handleResponse } from '@/lib/handle-response';
 
 interface UpcomingSession {
     id: string;
@@ -48,11 +49,21 @@ export default function TrainerDashboard({ userId }: Props) {
 
     useEffect(() => {
         async function loadData() {
-            const res = await getTrainerDashboardStatsAction(userId);
+            setLoading(true);
+            const response = await getTrainerDashboardStatsAction(userId);
+            const [data] = response;
 
-            if (res.success && res.data) {
-                setStats(res.data as unknown as TrainerStats);
-            }
+            handleResponse(response, {
+                onSuccess: () => {
+                    setStats(data as unknown as TrainerStats);
+                },
+                onError: (errorMessage) => {
+                    console.error(
+                        'Fetch Trainer Stats rejected:',
+                        errorMessage,
+                    );
+                },
+            });
 
             setLoading(false);
         }
