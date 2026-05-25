@@ -8,7 +8,7 @@ import {
 } from '@tabler/icons-react';
 
 interface Props {
-    stats: Record<string, number>;
+    stats: Record<string, number> | null;
 }
 
 export default function BillingStats({ stats }: Props) {

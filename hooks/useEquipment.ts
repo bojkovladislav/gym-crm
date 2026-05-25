@@ -18,7 +18,7 @@ import { handleResponse } from '@/lib/handle-response';
 export const useEquipment = () => {
     const [equipment, setEquipment] = useState<Equipment[]>([]);
     const [stats, setStats] = useState<EquipmentStatsData | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const fetchEquipmentStats = async () => {
         const response = await getEquipmentStatsAction();
@@ -39,8 +39,6 @@ export const useEquipment = () => {
         category?: EquipmentCategory;
         status?: string;
     }) => {
-        setLoading(true);
-
         const response = await getEquipmentAction(filters);
         const [data] = response;
 
@@ -62,8 +60,6 @@ export const useEquipment = () => {
     const addNewEquipment = async (
         data: Omit<Equipment, 'id' | 'createdAt' | 'updatedAt'>,
     ) => {
-        setLoading(true);
-
         const response = await createEquipmentAction(
             data.name,
             data.category,
@@ -81,13 +77,9 @@ export const useEquipment = () => {
                 console.error('New Equipment creation rejected:', errorMessage);
             },
         });
-
-        setLoading(false);
     };
 
     const editEquipment = async (id: string, data: Equipment) => {
-        setLoading(true);
-
         const response = await editEquipmentAction(id, data);
 
         handleResponse(response, {
@@ -99,8 +91,6 @@ export const useEquipment = () => {
                 console.error('Equipment edit rejected:', errorMessage);
             },
         });
-
-        setLoading(false);
     };
 
     const requestMaintenance = async (
@@ -121,8 +111,6 @@ export const useEquipment = () => {
     };
 
     const removeEquipment = async (id: string) => {
-        setLoading(true);
-
         const response = await deleteEquipmentAction(id);
 
         handleResponse(response, {
@@ -134,11 +122,10 @@ export const useEquipment = () => {
                 console.error('Equipment deletion rejected', errorMessage);
             },
         });
-
-        setLoading(false);
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchEquipmentStats();
     }, []);
 

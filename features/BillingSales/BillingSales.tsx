@@ -1,3 +1,5 @@
+'use client';
+
 import { PageHeader } from '@/components/PageHeader';
 import { Box, Group, Stack } from '@mantine/core';
 import BillingStats from './BillingStats';
@@ -6,6 +8,7 @@ import SalesByCategoryChart from './SalesByCategoryChart';
 import { TransactionType } from '@/app/generated/prisma';
 import { getBillingDataAction } from '@/actions/transaction.action';
 import { handleResponse } from '@/lib/handle-response';
+import { useEffect, useState } from 'react';
 
 export interface Transaction {
     id: string;
@@ -17,21 +20,36 @@ export interface Transaction {
     member: { name: string } | null;
 }
 
-export default async function BillingSales() {
-    const response = await getBillingDataAction();
+export default function BillingSales() {
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [stats, setStats] = useState<Record<string, number> | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    handleResponse(response, {
-        onError: (errorMessage) => {
-            console.error(
-                'Fetch of billing information rejected:',
-                errorMessage,
-            );
-        },
-    });
+    useEffect(() => {
+        async function getBillingData() {
+            const response = await getBillingDataAction();
+            const [data] = response;
 
-    const [data] = response;
+            handleResponse(response, {
+                onSuccess: () => {
+                    if (data !== null) {
+                        setTransactions(data.transactions);
+                        setStats(data.stats);
+                    }
+                },
+                onError: (errorMessage) => {
+                    console.error(
+                        'Fetch of billing information rejected:',
+                        errorMessage,
+                    );
+                },
+            });
 
-    if (data === null) return;
+            setLoading(false);
+        }
+
+        getBillingData();
+    }, []);
 
     return (
         <Stack>
@@ -41,11 +59,14 @@ export default async function BillingSales() {
                 formTitle='Log New Gym Equipment'
             />
 
-            <BillingStats stats={data.stats} />
+            <BillingStats stats={stats} />
 
             <Group align='stretch'>
                 <Box style={{ flex: 1 }}>
-                    <BillingDataTable transactions={data.transactions} />
+                    <BillingDataTable
+                        transactions={transactions}
+                        loading={loading}
+                    />
                 </Box>
 
                 <SalesByCategoryChart />

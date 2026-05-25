@@ -95,6 +95,7 @@ export default function EquipmentLog({ readOnly }: Props) {
 
             <EquipmentContent
                 readOnly={readOnly}
+                loading={loading}
                 equipment={equipment}
                 removeEquipment={removeEquipment}
                 inputs={equipmentInputs}

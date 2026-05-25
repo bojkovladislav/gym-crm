@@ -8,6 +8,7 @@ import {
     Paper,
     ActionIcon,
     ScrollArea,
+    Loader,
 } from '@mantine/core';
 import {
     IconReceipt,
@@ -18,9 +19,10 @@ import { Transaction } from './BillingSales';
 
 interface Props {
     transactions: Transaction[];
+    loading: boolean;
 }
 
-export default function BillingDataTable({ transactions }: Props) {
+export default function BillingDataTable({ transactions, loading }: Props) {
     const rows = transactions.map((tx) => (
         <Table.Tr key={tx.id}>
             <Table.Td>
@@ -95,7 +97,20 @@ export default function BillingDataTable({ transactions }: Props) {
                             <Table.Th />
                         </Table.Tr>
                     </Table.Thead>
-                    <Table.Tbody>{rows}</Table.Tbody>
+                    <Table.Tbody>
+                        {loading ? (
+                            <Table.Tr>
+                                <Table.Td
+                                    colSpan={7}
+                                    style={{ textAlign: 'center' }}
+                                >
+                                    <Loader />
+                                </Table.Td>
+                            </Table.Tr>
+                        ) : (
+                            rows
+                        )}
+                    </Table.Tbody>
                 </Table>
             </ScrollArea>
         </Paper>
