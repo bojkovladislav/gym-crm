@@ -11,6 +11,7 @@ import {
 import { IconBarbell, IconMail } from '@tabler/icons-react';
 import { Member } from '../Members/Members';
 import { CreateAppointmentModal } from './CreateAppointmentModal';
+import { MemberStatus } from '@/app/generated/prisma';
 
 interface Props {
     trainerId: string;
@@ -19,10 +20,15 @@ interface Props {
 
 export default function MyClientsTable({ trainerId, clients }: Props) {
     const rows = clients.map((client) => {
+        const nonActiveClient =
+            client.status === MemberStatus.PENDING_ACTIVATION &&
+            client.subscriptionStartDate === null;
+
         const isExpiring =
+            client.subscriptionEndDate &&
             new Date(client.subscriptionEndDate).getTime() -
                 new Date().getTime() <
-            3 * 24 * 60 * 60 * 1000;
+                3 * 24 * 60 * 60 * 1000;
 
         return (
             <Table.Tr key={client.id}>
@@ -46,12 +52,18 @@ export default function MyClientsTable({ trainerId, clients }: Props) {
                 </Table.Td>
 
                 <Table.Td>
-                    <Badge
-                        color={isExpiring ? 'orange' : 'green'}
-                        variant='light'
-                    >
-                        {isExpiring ? 'Expiring Soon' : 'Active'}
-                    </Badge>
+                    {nonActiveClient ? (
+                        <Badge color='gray' variant='light'>
+                            Subscription not activated
+                        </Badge>
+                    ) : (
+                        <Badge
+                            color={isExpiring ? 'orange' : 'green'}
+                            variant='light'
+                        >
+                            {isExpiring ? 'Expiring Soon' : 'Active'}
+                        </Badge>
+                    )}
                 </Table.Td>
 
                 <Table.Td>
