@@ -138,12 +138,13 @@ export async function memberCheckIn(memberId: string) {
         await prisma.member.update({
             where: { id: memberId },
             data: {
-                visits: { create: { memberId, visitDate: now } },
                 status: 'ACTIVE',
                 subscriptionStartDate: startDate,
                 subscriptionEndDate: endDate,
             },
         });
+
+        await prisma.visit.create({ data: { memberId, visitDate: now } });
 
         return {
             message: 'You have successfully activated your subscription.',
