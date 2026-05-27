@@ -182,10 +182,11 @@ export default function ActionMenu<T extends { id: string; name: string }>({
                                     if (action.name === 'edit') {
                                         setSelectedPerson(currentObject);
                                     } else if (
-                                        action.name === 'checkIn-simulation' &&
-                                        checkInAction
+                                        (action.name === 'checkIn-simulation' &&
+                                            checkInAction) ||
+                                        action.name === 'attendance'
                                     ) {
-                                        checkInAction.action(currentObject.id);
+                                        action.action(currentObject.id);
                                     } else {
                                         (action.action as () => void)();
                                     }

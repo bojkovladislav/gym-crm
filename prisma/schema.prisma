@@ -105,7 +105,6 @@ model Member {
   planId       String
   plan         Plan           @relation(fields: [planId], references: [id])
   status       MemberStatus   @default(INACTIVE) 
-  visits       Int            @default(0)
   keyFobId     String?        @unique
   subscriptionStartDate DateTime?
   subscriptionEndDate DateTime?
@@ -115,8 +114,18 @@ model Member {
   transactions Transaction[]
   assignedTrainerId String?
   assignedTrainer   User?     @relation("TrainerMembers", fields: [assignedTrainerId], references: [id])
+  visitLogs   Visit[]
 
   @@map("members")
+}
+
+model Visit {
+  id Int @id @default(autoincrement())
+  visitDate DateTime @default(now())
+  memberId String
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@map("visits")
 }
 
 model Plan {

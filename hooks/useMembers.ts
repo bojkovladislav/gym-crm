@@ -8,12 +8,14 @@ import {
     getMembersAction,
     createMemberAction,
 } from '@/actions/member.action';
-import { Member, Plan } from '@/features/Members/Members';
+import { Member, Plan, Visit } from '@/features/Members/Members';
 import { handleResponse } from '@/lib/handle-response';
 import { getPlansAction } from '@/actions/plans.action';
+import { getVisitsAction } from '@/actions/visits.action';
 
 export const useMembers = () => {
     const [members, setMembers] = useState<Member[]>([]);
+    const [visits, setVisits] = useState<Visit[] | null>(null);
     const [activeTrainers, setActiveTrainers] = useState<
         {
             value: string;
@@ -69,6 +71,7 @@ export const useMembers = () => {
                 dob: formatDateString(member.dob),
                 joinedAt: formatDateString(member.joinedAt),
                 plan: planMap[member.planId],
+                visits: member._count.visitLogs,
             })),
         );
 
@@ -90,6 +93,23 @@ export const useMembers = () => {
             },
             onError: (errorMessage) => {
                 console.error('Member check in rejected:', errorMessage);
+            },
+        });
+    };
+
+    const getAttendanceLog = async (memberId: string) => {
+        setVisits(null);
+
+        const response = await getVisitsAction(memberId);
+        const [data] = response;
+
+        handleResponse(response, {
+            successMessage: 'Attendance Log generated successfully!',
+            onSuccess: () => {
+                setVisits(data);
+            },
+            onError: (errorMessage) => {
+                console.error('Fetch visits rejected:', errorMessage);
             },
         });
     };
@@ -164,8 +184,10 @@ export const useMembers = () => {
     return {
         members,
         plans,
+        visits,
         activeTrainers,
         loading,
+        getAttendanceLog,
         addNewMember,
         editMember,
         deleteMember,

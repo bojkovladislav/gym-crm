@@ -6,7 +6,10 @@ import { keyFobIdGenerator } from '@/helpers/keyFobIdGenerator';
 import prisma from '@/lib/prisma';
 
 export async function getMembers() {
-    return await prisma.member.findMany({ orderBy: { joinedAt: 'desc' } });
+    return await prisma.member.findMany({
+        orderBy: { joinedAt: 'desc' },
+        include: { _count: { select: { visitLogs: true } } },
+    });
 }
 
 export async function createMember(newMember: Member) {
@@ -30,7 +33,6 @@ export async function createMember(newMember: Member) {
                 planId,
                 dob: new Date(dob),
                 status: 'PENDING_ACTIVATION',
-                visits: 0,
                 joinedAt: new Date(),
             },
         });
@@ -90,9 +92,10 @@ export async function memberCheckIn(memberId: string) {
                     data: {
                         subscriptionEndDate: newEndDate,
                         status: 'ACTIVE',
-                        visits: { increment: 1 },
                     },
                 });
+
+                await tx.visit.create({ data: { memberId, visitDate: now } });
 
                 const plan = await tx.plan.findUnique({
                     where: { id: member.planId },
@@ -135,7 +138,7 @@ export async function memberCheckIn(memberId: string) {
         await prisma.member.update({
             where: { id: memberId },
             data: {
-                visits: { increment: 1 },
+                visits: { create: { memberId, visitDate: now } },
                 status: 'ACTIVE',
                 subscriptionStartDate: startDate,
                 subscriptionEndDate: endDate,
@@ -147,10 +150,7 @@ export async function memberCheckIn(memberId: string) {
         };
     }
 
-    await prisma.member.update({
-        where: { id: memberId },
-        data: { visits: { increment: 1 } },
-    });
+    await prisma.visit.create({ data: { memberId, visitDate: now } });
 
     return { message: 'You have been successfully authenticated. Welcome In' };
 }

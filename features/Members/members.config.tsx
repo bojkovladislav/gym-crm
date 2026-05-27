@@ -105,6 +105,7 @@ export const getPersonFields = (
 export const getPersonActions = (
     onDelete: (id: string) => void,
     checkIn: (id: string) => void,
+    toggleAttendanceModal: (memberId: string) => void,
 ): Action[] => [
     {
         name: 'edit',
@@ -122,7 +123,8 @@ export const getPersonActions = (
         name: 'attendance',
         label: 'View Attendance',
         icon: <IconCalendarClock size={14} />,
-        action: () => {},
+        action: ((memberId: string | number) =>
+            toggleAttendanceModal(memberId as string)) as () => void,
     },
     {
         name: 'checkIn-simulation',
