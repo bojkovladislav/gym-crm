@@ -9,13 +9,19 @@ import {
     ActionIcon,
     ScrollArea,
     Loader,
+    Menu,
 } from '@mantine/core';
 import {
     IconReceipt,
     IconExternalLink,
     IconDotsVertical,
+    IconDownload,
 } from '@tabler/icons-react';
 import { Transaction } from './BillingSales';
+import { downloadInvoicePDF } from '@/lib/download-invoice';
+import { InvoiceComponent } from '@/components/InvoiceComponent/InvoiceComponent';
+import { useRef } from 'react';
+import { formatDateString } from '@/helpers/formatters';
 
 interface Props {
     transactions: Transaction[];
@@ -23,6 +29,15 @@ interface Props {
 }
 
 export default function BillingDataTable({ transactions, loading }: Props) {
+    const invoiceRef = useRef<HTMLDivElement>(null);
+
+    async function handleDownload(transactionDate: string) {
+        await downloadInvoicePDF(
+            'invoice-container',
+            `invoice_${transactionDate}`,
+        );
+    }
+
     const rows = transactions.map((tx) => (
         <Table.Tr key={tx.id}>
             <Table.Td>
@@ -76,9 +91,41 @@ export default function BillingDataTable({ transactions, loading }: Props) {
                     <ActionIcon variant='subtle' color='gray'>
                         <IconExternalLink size={16} />
                     </ActionIcon>
-                    <ActionIcon variant='subtle' color='gray'>
-                        <IconDotsVertical size={16} />
-                    </ActionIcon>
+                    <Menu shadow='md' width={200}>
+                        <Menu.Target>
+                            <ActionIcon variant='subtle' color='gray'>
+                                <IconDotsVertical size={16} />
+                            </ActionIcon>
+                        </Menu.Target>
+
+                        <Menu.Dropdown>
+                            <Menu.Label>Transaction actions</Menu.Label>
+
+                            <Menu.Item
+                                leftSection={<IconDownload size={14} />}
+                                onClick={() =>
+                                    handleDownload(
+                                        formatDateString(tx.createdAt),
+                                    )
+                                }
+                            >
+                                Download Invoice PDF
+                            </Menu.Item>
+
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    left: '-9999px',
+                                    top: '0',
+                                }}
+                            >
+                                <InvoiceComponent
+                                    ref={invoiceRef}
+                                    transaction={tx}
+                                />
+                            </div>
+                        </Menu.Dropdown>
+                    </Menu>
                 </Group>
             </Table.Td>
         </Table.Tr>
